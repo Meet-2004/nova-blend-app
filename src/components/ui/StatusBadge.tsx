@@ -1,6 +1,6 @@
 import { cn } from "@/lib/cn";
 
-export function Badge({
+export function StatusBadge({
   children, tone = "default", className,
 }: {
   children: React.ReactNode;
