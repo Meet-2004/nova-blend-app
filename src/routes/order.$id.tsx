@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Check, ChefHat, Clock, Flame, Utensils, Receipt } from "lucide-react";
 import { useEffect, useState } from "react";
