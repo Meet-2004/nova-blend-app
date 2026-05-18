@@ -4,16 +4,18 @@ import { QrCode, ShoppingBag, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useCart } from "@/store/cart";
+import { useSessionGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/mode")({ component: ModeSelect });
 
 function ModeSelect() {
+  useSessionGuard();
   const nav = useNavigate();
   const setMode = useCart((s) => s.setMode);
 
   const pick = (m: "dine-in" | "takeaway") => {
     setMode(m);
-    nav({ to: m === "dine-in" ? "/scan" : "/restaurants" });
+    nav({ to: m === "dine-in" ? "/dine-in" : "/takeaway-login" });
   };
 
   return (
@@ -29,14 +31,14 @@ function ModeSelect() {
           onClick={() => pick("dine-in")}
           icon={<QrCode className="h-6 w-6" />}
           title="Dine-in"
-          desc="Scan the QR at your table and order seat-side. Smart serving groups time every course."
+          desc="Scan the QR at your table or search nearby. No login required."
           gradient="from-primary/30 via-primary/10 to-transparent"
         />
         <Tile
           onClick={() => pick("takeaway")}
           icon={<ShoppingBag className="h-6 w-6" />}
           title="Takeaway"
-          desc="Pre-order from any nearby restaurant. We'll have it hot when you arrive."
+          desc="Sign in with phone, pre-order, pay, and pick up hot."
           gradient="from-accent/30 via-accent/10 to-transparent"
           delay={0.05}
         />
