@@ -27,7 +27,17 @@ export const DINE_IN_STAGES = [
   { id: "kitchen", label: "In the kitchen" },
   { id: "cooking", label: "Cooking" },
   { id: "serving", label: "Being served" },
+  { id: "served", label: "Served" },
 ];
+
+export const ORDER_STATUS = {
+  NONE: "none",
+  PLACED: "placed",
+  KITCHEN: "kitchen",
+  COOKING: "cooking",
+  SERVING: "serving",
+  SERVED: "served",
+};
 
 export const OTP_LENGTH = 4;
 export const OTP_RESEND_COOLDOWN = 30;

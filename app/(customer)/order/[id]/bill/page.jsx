@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
 import { completeBillPayment, endSession } from "@/store/slices/dineInSlice";
-import { selectSubtotal } from "@/store/slices/cartSlice";
+import { selectSubtotal, clearCart } from "@/store/slices/cartSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
@@ -34,6 +34,7 @@ export default function Bill() {
     setPaying(true);
     setTimeout(() => {
       dispatch(completeBillPayment());
+      dispatch(clearCart());
       setPaid(true);
       setTimeout(() => {
         dispatch(endSession());
@@ -60,7 +61,7 @@ export default function Bill() {
             <Check className="h-10 w-10" strokeWidth={3} />
           </motion.div>
           <h2 className="mt-6 text-2xl font-bold tracking-tight">Payment received!</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Thanks for dining with us. Heading home...</p>
+          <p className="mt-1 text-sm text-muted-foreground">Thank you for dining with us. Heading back to home...</p>
         </motion.div>
       </div>
     );

@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Plus, Minus, ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
+import { useEffect } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
 import { incrementItem, decrementItem, removeItem, selectSubtotal } from "@/store/slices/cartSlice";
-import { placeOrder } from "@/store/slices/dineInSlice";
+import { placeOrder, selectHasActiveDineInOrder, selectHasActiveTakeawayOrder } from "@/store/slices/dineInSlice";
 import { formatPrice } from "@/lib/format";
 import { SERVING_GROUPS } from "@/services/restaurants";
 
@@ -18,10 +19,27 @@ export default function CartPage() {
   const mode = useSelector((s) => s.dineIn.mode);
   const tableNumber = useSelector((s) => s.dineIn.tableNumber);
   const restaurantName = useSelector((s) => s.dineIn.restaurantName);
+  const restaurantId = useSelector((s) => s.dineIn.restaurantId);
+  const orderId = useSelector((s) => s.dineIn.orderId);
+  const billStatus = useSelector((s) => s.dineIn.billStatus);
+  const hasDineInOrder = useSelector(selectHasActiveDineInOrder);
+  const hasTakeawayOrder = useSelector(selectHasActiveTakeawayOrder);
   const subtotal = useSelector(selectSubtotal);
   const taxes = Math.round(subtotal * 0.05);
   const service = mode === "dine-in" ? Math.round(subtotal * 0.05) : 0;
   const total = subtotal + taxes + service;
+
+  const isBillGenerated = billStatus === "generated" || billStatus === "paid";
+
+  useEffect(() => {
+    if (hasDineInOrder && orderId && isBillGenerated) {
+      router.replace(`/order/${orderId}/bill`);
+    } else if (hasDineInOrder && orderId) {
+      router.replace(`/order/${orderId}`);
+    } else if (hasTakeawayOrder && orderId) {
+      router.replace(`/takeaway-order/${orderId}`);
+    }
+  }, [hasDineInOrder, hasTakeawayOrder, orderId, isBillGenerated, router]);
 
   const grouped = SERVING_GROUPS.map((g) => ({
     group: g,
@@ -45,6 +63,14 @@ export default function CartPage() {
           <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground" />
           <h2 className="mt-4 text-lg font-semibold">Your cart is empty</h2>
           <p className="mt-1 text-sm text-muted-foreground">Add items from the menu to get started.</p>
+          {restaurantId && (
+            <button
+              onClick={() => router.push(`/restaurant/${restaurantId}/menu`)}
+              className="mt-4 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
+            >
+              Browse menu
+            </button>
+          )}
         </div>
       </Container>
     );

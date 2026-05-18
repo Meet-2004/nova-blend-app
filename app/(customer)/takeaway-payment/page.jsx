@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSubtotal } from "@/store/slices/cartSlice";
+import { selectSubtotal, clearCart } from "@/store/slices/cartSlice";
 import { placeOrder, markPaid } from "@/store/slices/dineInSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
@@ -32,6 +32,7 @@ export default function TakeawayPayment() {
       dispatch(markPaid());
       const id = "ORD-" + Math.random().toString(36).slice(2, 8).toUpperCase();
       dispatch(placeOrder(id));
+      dispatch(clearCart());
       router.replace(`/takeaway-order/${id}`);
     }, 1200);
   };
@@ -40,7 +41,7 @@ export default function TakeawayPayment() {
 
   return (
     <Container className="min-h-screen pb-10">
-      <TopBar title="Pay to confirm" subtitle={restaurantName ?? "Takeaway"} />
+      <TopBar title="Confirm your order" subtitle={restaurantName ?? "Takeaway"} />
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}

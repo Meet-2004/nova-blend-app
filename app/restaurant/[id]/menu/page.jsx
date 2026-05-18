@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Flame, Info, Plus, Minus, Search, Star } from "lucide-react";
+import { Flame, Info, Plus, Minus, Search, Star, Receipt, UtensilsCrossed } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -11,16 +11,21 @@ import { CartBar } from "@/components/cart/CartBar";
 import { getMenu, getRestaurant, SERVING_GROUPS } from "@/services/restaurants";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem, incrementItem, decrementItem } from "@/store/slices/cartSlice";
+import { selectIsBillGenerated, selectHasActiveDineInOrder } from "@/store/slices/dineInSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 export default function MenuPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id;
   const restaurant = getRestaurant(id);
   const menu = getMenu(id);
   const [active, setActive] = useState("starters");
   const [q, setQ] = useState("");
+  const isBillGenerated = useSelector(selectIsBillGenerated);
+  const hasActiveOrder = useSelector(selectHasActiveDineInOrder);
+  const orderId = useSelector((s) => s.dineIn.orderId);
 
   const filtered = useMemo(
     () =>
@@ -63,6 +68,39 @@ export default function MenuPage() {
           <span className="text-foreground font-medium">Smart serving groups</span> — your order is timed so starters arrive first, mains follow, desserts last.
         </div>
       </motion.div>
+
+      {isBillGenerated && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-3 glass rounded-2xl p-3 flex items-center gap-3 border border-[oklch(0.74_0.17_155/0.3)]"
+        >
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[oklch(0.74_0.17_155/0.15)] text-[oklch(0.74_0.17_155)]">
+            <Receipt className="h-4 w-4" />
+          </div>
+          <div className="text-xs text-muted-foreground leading-relaxed">
+            <span className="text-foreground font-medium">Bill generated</span> — your order is finalised. No more items can be added.
+          </div>
+        </motion.div>
+      )}
+
+      {hasActiveOrder && !isBillGenerated && (
+        <motion.button
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={() => router.push(`/order/${orderId}`)}
+          className="mt-3 w-full glass rounded-2xl p-3 flex items-center gap-3 border border-primary/30 text-left"
+        >
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
+            <UtensilsCrossed className="h-4 w-4" />
+          </div>
+          <div className="flex-1">
+            <div className="text-xs font-medium">Order in progress</div>
+            <div className="text-[11px] text-muted-foreground">Add more items or track your order</div>
+          </div>
+          <span className="text-xs text-primary font-semibold">Track</span>
+        </motion.button>
+      )}
 
       <div className="mt-4 flex items-center gap-2 rounded-2xl glass px-4 h-12">
         <Search className="h-4 w-4 text-muted-foreground" />
@@ -128,6 +166,7 @@ export default function MenuPage() {
 function MenuRow({ item }) {
   const dispatch = useDispatch();
   const qty = useSelector((s) => s.cart.items.find((i) => i.id === item.id)?.qty ?? 0);
+  const isBillGenerated = useSelector(selectIsBillGenerated);
 
   return (
     <div className="glass rounded-2xl p-3 flex gap-3">
@@ -155,7 +194,9 @@ function MenuRow({ item }) {
 
         <div className="mt-2 flex items-center justify-between">
           <div className="font-semibold text-sm">{formatPrice(item.price)}</div>
-          {qty === 0 ? (
+          {isBillGenerated ? (
+            <span className="text-xs text-muted-foreground">Bill generated</span>
+          ) : qty === 0 ? (
             <motion.button
               whileTap={{ scale: 0.93 }}
               onClick={() =>

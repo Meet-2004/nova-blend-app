@@ -3,17 +3,14 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
-import { selectIsDineInLocked, selectIsActiveSession } from "@/store/slices/dineInSlice";
+import { selectIsDineInLocked, selectIsActiveSession, selectIsBillGenerated } from "@/store/slices/dineInSlice";
 
-/**
- * useSessionGuard — used on public/landing pages.
- * Redirects users with active sessions back into their flow.
- */
 export function useSessionGuard() {
   const router = useRouter();
   const pathname = usePathname();
   const isDineInLocked = useSelector(selectIsDineInLocked);
   const isActiveSession = useSelector(selectIsActiveSession);
+  const isBillGenerated = useSelector(selectIsBillGenerated);
   const sessionStatus = useSelector((s) => s.dineIn.sessionStatus);
   const mode = useSelector((s) => s.dineIn.mode);
   const restaurantId = useSelector((s) => s.dineIn.restaurantId);
@@ -22,9 +19,16 @@ export function useSessionGuard() {
 
   useEffect(() => {
     if (isDineInLocked && orderId) {
-      const isOnOrderPages = pathname.startsWith(`/order/${orderId}`);
-      if (!isOnOrderPages) {
-        router.replace(`/order/${orderId}`);
+      if (isBillGenerated) {
+        const isOnBillPage = pathname.startsWith(`/order/${orderId}/bill`);
+        if (!isOnBillPage) {
+          router.replace(`/order/${orderId}/bill`);
+        }
+      } else {
+        const isOnOrderPages = pathname.startsWith(`/order/${orderId}`);
+        if (!isOnOrderPages) {
+          router.replace(`/order/${orderId}`);
+        }
       }
       return;
     }
@@ -52,13 +56,9 @@ export function useSessionGuard() {
         }
       }
     }
-  }, [isDineInLocked, sessionStatus, mode, restaurantId, orderId, isPaid, pathname, router]);
+  }, [isDineInLocked, isBillGenerated, sessionStatus, mode, restaurantId, orderId, isPaid, pathname, router]);
 }
 
-/**
- * useDineInLockGuard — place on pages that must not be accessible during
- * an active locked dine-in session (landing, mode, scan, dine-in, etc.).
- */
 export function useDineInLockGuard() {
   const router = useRouter();
   const isDineInLocked = useSelector(selectIsDineInLocked);
@@ -71,10 +71,6 @@ export function useDineInLockGuard() {
   }, [isDineInLocked, orderId, router]);
 }
 
-/**
- * useTakeawayAuthGuard — ensures user has authenticated (phone + OTP)
- * before accessing takeaway routes.
- */
 export function useTakeawayAuthGuard() {
   const router = useRouter();
   const phone = useSelector((s) => s.auth.phone);
@@ -87,9 +83,6 @@ export function useTakeawayAuthGuard() {
   }, [phone, isVerified, router]);
 }
 
-/**
- * useTakeawayCartGuard — ensures user has items in cart before payment.
- */
 export function useTakeawayCartGuard() {
   const router = useRouter();
   const itemCount = useSelector((s) => s.cart.items.length);

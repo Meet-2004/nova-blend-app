@@ -133,7 +133,7 @@ export default function TakeawayLogin() {
 
   return (
     <Container className="min-h-screen pb-10">
-      <TopBar title="Takeaway sign in" />
+      <TopBar title="Order for pickup" />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -152,7 +152,7 @@ export default function TakeawayLogin() {
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {step === "phone"
-              ? "We'll send a 4-digit code to confirm pickup."
+              ? "We'll send a 4-digit code to confirm your number for pickup."
               : `Code sent to +91 ${authPhone || phoneValue}. Demo code: 1234`}
           </p>
 

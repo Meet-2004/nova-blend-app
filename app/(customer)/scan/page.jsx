@@ -35,8 +35,8 @@ export default function Scan() {
     <Container className="min-h-screen pb-10">
       <TopBar title="Scan table QR" />
       <div className="mt-8 text-center">
-        <h2 className="text-2xl font-bold tracking-tight">Point at the QR</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Find it on your table tent.</p>
+        <h2 className="text-2xl font-bold tracking-tight">Point at the QR code</h2>
+        <p className="mt-1 text-sm text-muted-foreground">You'll find it on your table tent.</p>
       </div>
 
       <motion.div

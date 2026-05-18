@@ -3,12 +3,13 @@
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChefHat, Package, PartyPopper, Sparkles } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
 import { setTakeawayStatus, clearTakeaway } from "@/store/slices/takeawaySlice";
 import { endSession } from "@/store/slices/dineInSlice";
+import { clearCart } from "@/store/slices/cartSlice";
 import { selectSubtotal } from "@/store/slices/cartSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
@@ -31,9 +32,22 @@ export default function TakeawayOrder() {
   const taxes = Math.round(subtotal * 0.05);
   const total = subtotal + taxes;
   const stage = STAGES.findIndex((s) => s.id === takeawayStatus);
+  const completedRef = useRef(false);
 
   useEffect(() => {
-    if (takeawayStatus === "completed") return;
+    if (takeawayStatus === "completed") {
+      if (!completedRef.current) {
+        completedRef.current = true;
+        const timer = setTimeout(() => {
+          dispatch(clearCart());
+          dispatch(endSession());
+          dispatch(clearTakeaway());
+          router.replace("/");
+        }, 4000);
+        return () => clearTimeout(timer);
+      }
+      return;
+    }
     const t = setInterval(() => {
       const current = STAGES.findIndex((s) => s.id === takeawayStatus);
       if (current < STAGES.length - 1) {
@@ -41,13 +55,7 @@ export default function TakeawayOrder() {
       }
     }, 5000);
     return () => clearInterval(t);
-  }, [takeawayStatus, dispatch]);
-
-  const finish = () => {
-    dispatch(endSession());
-    dispatch(clearTakeaway());
-    router.replace("/");
-  };
+  }, [takeawayStatus, dispatch, router]);
 
   return (
     <Container className="min-h-screen pb-10">
@@ -159,28 +167,12 @@ export default function TakeawayOrder() {
               <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[oklch(0.74_0.17_155/0.15)] text-[oklch(0.74_0.17_155)] mb-3">
                 <Sparkles className="h-6 w-6" />
               </div>
-              <div className="font-semibold">Your order is complete!</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Thank you for ordering with us.</div>
+              <div className="font-semibold">Your pickup order is complete!</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Thank you for ordering with us. Heading back to home...</div>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={finish}
-              className="w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow"
-            >
-              Back to home
-            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {takeawayStatus !== "completed" && (
-        <button
-          onClick={finish}
-          className="mt-6 w-full rounded-2xl border border-border h-11 text-sm text-muted-foreground hover:text-foreground transition"
-        >
-          End session early
-        </button>
-      )}
     </Container>
   );
 }

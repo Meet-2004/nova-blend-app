@@ -23,8 +23,8 @@ export default function ModeSelect() {
     <Container className="min-h-screen pb-10">
       <TopBar title="How are you dining?" />
       <div className="mt-8">
-        <h2 className="text-2xl font-bold tracking-tight">Choose your flow</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Pick one to get started.</p>
+        <h2 className="text-2xl font-bold tracking-tight">How would you like to order?</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Choose your dining preference.</p>
       </div>
 
       <div className="mt-8 space-y-4">
@@ -32,14 +32,14 @@ export default function ModeSelect() {
           onClick={() => pick("dine-in")}
           icon={<QrCode className="h-6 w-6" />}
           title="Dine-in"
-          desc="Scan the QR at your table or search nearby. No login required."
+          desc="Scan the QR at your table or search nearby. No sign-in needed."
           gradient="from-primary/30 via-primary/10 to-transparent"
         />
         <Tile
           onClick={() => pick("takeaway")}
           icon={<ShoppingBag className="h-6 w-6" />}
           title="Takeaway"
-          desc="Sign in with phone, pre-order, pay, and pick up hot."
+          desc="Sign in with your phone, pre-order, pay, and pick up fresh."
           gradient="from-accent/30 via-accent/10 to-transparent"
           delay={0.05}
         />

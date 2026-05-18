@@ -37,7 +37,7 @@ export default function DineInSearch() {
 
   return (
     <Container className="min-h-screen pb-10">
-      <TopBar title="Find your restaurant" />
+      <TopBar title="Find your restaurant" subtitle="Enter your table number to start" />
 
       <div className="mt-5 space-y-3">
         <div className="flex items-center gap-2 rounded-2xl glass px-4 h-12">
