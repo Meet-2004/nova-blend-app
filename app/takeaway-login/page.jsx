@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, ShieldCheck, RefreshCw, AlertCircle } from "lucide-react";
+import { Phone, ShieldCheck, RefreshCw, CircleAlert as AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";

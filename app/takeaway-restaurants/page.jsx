@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Star, MapPin, Clock, AlertTriangle } from "lucide-react";
+import { Search, Star, MapPin, Clock, TriangleAlert as AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
