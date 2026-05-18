@@ -122,10 +122,10 @@ function CartPage() {
         <div className="mx-auto max-w-md glass-strong rounded-2xl p-3 ring-glow">
           <motion.button
             whileTap={{ scale: 0.98 }}
-            onClick={onPlace}
+            onClick={onPrimary}
             className="w-full h-13 rounded-xl bg-primary text-primary-foreground py-3.5 font-semibold flex items-center justify-between px-5"
           >
-            <span className="text-sm">Place order · {formatPrice(total)}</span>
+            <span className="text-sm">{ctaLabel}</span>
             <ArrowRight className="h-5 w-5" />
           </motion.button>
         </div>
