@@ -18,9 +18,17 @@ const STAGES = [
 ];
 
 function OrderTracking() {
+  const nav = useNavigate();
   const { id } = useParams({ from: "/order/$id" });
   const { items, restaurantName, tableNumber, mode } = useCart();
   const [stage, setStage] = useState(0);
+
+  // Dine-in only — takeaway has its own tracking route
+  useEffect(() => {
+    if (mode === "takeaway") {
+      nav({ to: "/takeaway-order/$id", params: { id }, replace: true });
+    }
+  }, [mode, id, nav]);
 
   useEffect(() => {
     const t = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 4000);
