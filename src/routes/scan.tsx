@@ -6,10 +6,12 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useCart } from "@/store/cart";
 import { RESTAURANTS } from "@/services/restaurants";
+import { useDineInLockGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/scan")({ component: Scan });
 
 function Scan() {
+  useDineInLockGuard();
   const nav = useNavigate();
   const setRestaurant = useCart((s) => s.setRestaurant);
   const setMode = useCart((s) => s.setMode);

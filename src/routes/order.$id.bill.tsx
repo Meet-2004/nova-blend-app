@@ -15,21 +15,28 @@ type Method = "upi" | "card" | "cash";
 function Bill() {
   const nav = useNavigate();
   const { id } = useParams({ from: "/order/$id/bill" });
-  const { items, mode, restaurantName, tableNumber, endSession } = useCart();
+  const { items, mode, restaurantName, tableNumber, completeBillPayment, endSession } = useCart();
   const subtotal = useCart(selectSubtotal);
   const taxes = Math.round(subtotal * 0.05);
   const service = mode === "dine-in" ? Math.round(subtotal * 0.05) : 0;
   const total = subtotal + taxes + service;
 
   const [method, setMethod] = useState<Method>("upi");
+  const [paying, setPaying] = useState(false);
   const [paid, setPaid] = useState(false);
 
   const pay = () => {
-    setPaid(true);
+    setPaying(true);
     setTimeout(() => {
-      endSession();
-      nav({ to: "/" });
-    }, 1800);
+      // Mark bill paid — this unlocks the dine-in lock guard
+      completeBillPayment();
+      setPaid(true);
+      // End full session and go home after success animation
+      setTimeout(() => {
+        endSession();
+        nav({ to: "/", replace: true });
+      }, 2000);
+    }, 1200);
   };
 
   if (paid) {
@@ -41,11 +48,16 @@ function Bill() {
           transition={{ type: "spring", stiffness: 220, damping: 18 }}
           className="text-center"
         >
-          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[oklch(0.74_0.17_155)] text-background ring-glow">
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: [0.8, 1.1, 1] }}
+            transition={{ duration: 0.5, times: [0, 0.6, 1] }}
+            className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[oklch(0.74_0.17_155)] text-background ring-glow"
+          >
             <Check className="h-10 w-10" strokeWidth={3} />
-          </div>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight">Payment received</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Thanks for dining with us.</p>
+          </motion.div>
+          <h2 className="mt-6 text-2xl font-bold tracking-tight">Payment received!</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Thanks for dining with us. Heading home…</p>
         </motion.div>
       </div>
     );
@@ -53,7 +65,7 @@ function Bill() {
 
   return (
     <Container className="min-h-screen pb-10">
-      <TopBar title="Bill" subtitle={`#${id}`} />
+      <TopBar title="Bill" subtitle={`#${id}`} noBack />
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -68,7 +80,10 @@ function Bill() {
               {mode === "dine-in" && tableNumber ? `Table ${tableNumber}` : "Takeaway"}
             </div>
           </div>
-          <button className="grid h-9 w-9 place-items-center rounded-full bg-white/5 hover:bg-white/10" aria-label="Share">
+          <button
+            className="grid h-9 w-9 place-items-center rounded-full bg-white/5 hover:bg-white/10 transition"
+            aria-label="Share bill"
+          >
             <Share2 className="h-4 w-4" />
           </button>
         </div>
@@ -79,7 +94,7 @@ function Bill() {
           {items.map((i) => (
             <li key={i.id} className="flex justify-between text-sm">
               <span className="text-foreground/90">
-                <span className="text-muted-foreground tabular-nums">{i.qty}×</span> {i.name}
+                <span className="text-muted-foreground tabular-nums">{i.qty}&times;</span> {i.name}
               </span>
               <span className="tabular-nums">{formatPrice(i.price * i.qty)}</span>
             </li>
@@ -89,11 +104,14 @@ function Bill() {
         <div className="my-5 h-px bg-border" />
 
         <div className="space-y-1.5 text-sm">
-          <Row label="Subtotal" value={formatPrice(subtotal)} muted />
-          <Row label="Taxes (5%)" value={formatPrice(taxes)} muted />
-          {service > 0 && <Row label="Service (5%)" value={formatPrice(service)} muted />}
+          <BillRow label="Subtotal" value={formatPrice(subtotal)} muted />
+          <BillRow label="Taxes (5%)" value={formatPrice(taxes)} muted />
+          {service > 0 && <BillRow label="Service charge (5%)" value={formatPrice(service)} muted />}
           <div className="my-3 h-px bg-border" />
-          <Row label={<span className="font-bold text-base">Total</span>} value={<span className="font-bold text-base">{formatPrice(total)}</span>} />
+          <BillRow
+            label={<span className="font-bold text-base">Total</span>}
+            value={<span className="font-bold text-base">{formatPrice(total)}</span>}
+          />
         </div>
       </motion.div>
 
@@ -109,9 +127,21 @@ function Bill() {
       <motion.button
         whileTap={{ scale: 0.98 }}
         onClick={pay}
-        className="mt-8 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow"
+        disabled={paying}
+        className="mt-8 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow disabled:opacity-60 inline-flex items-center justify-center gap-2"
       >
-        Pay {formatPrice(total)}
+        {paying ? (
+          <>
+            <motion.span
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="inline-block h-4 w-4 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground"
+            />
+            Processing...
+          </>
+        ) : (
+          <>Pay {formatPrice(total)}</>
+        )}
       </motion.button>
     </Container>
   );
@@ -126,7 +156,7 @@ function PayOption({
       onClick={() => onClick(m)}
       className={cn(
         "rounded-2xl p-4 flex flex-col items-center gap-2 border transition",
-        active ? "border-primary/50 bg-primary/10 text-primary" : "border-border glass text-foreground/80"
+        active ? "border-primary/50 bg-primary/10 text-primary" : "border-border glass text-foreground/80",
       )}
     >
       {icon}
@@ -135,7 +165,7 @@ function PayOption({
   );
 }
 
-function Row({ label, value, muted }: { label: React.ReactNode; value: React.ReactNode; muted?: boolean }) {
+function BillRow({ label, value, muted }: { label: React.ReactNode; value: React.ReactNode; muted?: boolean }) {
   return (
     <div className={`flex justify-between ${muted ? "text-muted-foreground" : ""}`}>
       <span>{label}</span>

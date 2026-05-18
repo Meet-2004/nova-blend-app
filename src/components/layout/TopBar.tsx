@@ -3,11 +3,24 @@ import { ChevronLeft } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function TopBar({
-  title, subtitle, right, backTo,
-}: { title?: string; subtitle?: string; right?: ReactNode; backTo?: string }) {
+  title,
+  subtitle,
+  right,
+  backTo,
+  noBack,
+}: {
+  title?: string;
+  subtitle?: string;
+  right?: ReactNode;
+  backTo?: string;
+  /** Explicitly suppress the back button (e.g. on locked session pages) */
+  noBack?: boolean;
+}) {
   const loc = useLocation();
   const router = useRouter();
-  const showBack = !!backTo || loc.pathname !== "/";
+
+  // Show back button unless explicitly suppressed or on root
+  const showBack = !noBack && (!!backTo || loc.pathname !== "/");
 
   const BackBtn = backTo ? (
     <Link
@@ -21,7 +34,6 @@ export function TopBar({
     <button
       type="button"
       onClick={() => {
-        // Prefer browser history; fall back to home
         if (typeof window !== "undefined" && window.history.length > 1) {
           router.history.back();
         } else {

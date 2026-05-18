@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Check, ChefHat, Clock, Flame, Utensils, Receipt } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ const STAGES = [
 function OrderTracking() {
   const nav = useNavigate();
   const { id } = useParams({ from: "/order/$id" });
-  const { items, restaurantName, tableNumber, mode } = useCart();
+  const { items, restaurantName, tableNumber, mode, generateBill } = useCart();
   const [stage, setStage] = useState(0);
 
   // Dine-in only — takeaway has its own tracking route
@@ -40,9 +40,15 @@ function OrderTracking() {
     items: items.filter((i) => i.group === g.id),
   })).filter((s) => s.items.length > 0);
 
+  const handleGenerateBill = () => {
+    generateBill();
+    nav({ to: "/order/$id/bill", params: { id } });
+  };
+
   return (
     <Container className="min-h-screen pb-10">
-      <TopBar title="Order tracking" subtitle={`#${id}`} />
+      {/* No back button — user is locked in session until bill paid */}
+      <TopBar title="Order tracking" subtitle={`#${id}`} noBack />
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -74,13 +80,13 @@ function OrderTracking() {
               transition={{ delay: i * 0.05 }}
               className={cn(
                 "flex items-center gap-3 rounded-2xl p-3 border",
-                current ? "border-primary/40 bg-primary/8" : "border-border bg-white/[0.02]"
+                current ? "border-primary/40 bg-primary/8" : "border-border bg-white/[0.02]",
               )}
             >
               <div
                 className={cn(
                   "grid h-10 w-10 place-items-center rounded-xl",
-                  done || current ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground"
+                  done || current ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground",
                 )}
               >
                 {current ? (
@@ -131,14 +137,14 @@ function OrderTracking() {
         ))}
       </div>
 
-      <Link
-        to="/order/$id/bill"
-        params={{ id }}
-        className="mt-8 flex items-center justify-center gap-2 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold"
+      <motion.button
+        whileTap={{ scale: 0.98 }}
+        onClick={handleGenerateBill}
+        className="mt-8 flex items-center justify-center gap-2 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow"
       >
         <Receipt className="h-5 w-5" />
         Generate bill
-      </Link>
+      </motion.button>
     </Container>
   );
 }

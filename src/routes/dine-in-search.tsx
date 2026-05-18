@@ -6,10 +6,12 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { RESTAURANTS } from "@/services/restaurants";
 import { useCart } from "@/store/cart";
+import { useDineInLockGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/dine-in-search")({ component: DineInSearch });
 
 function DineInSearch() {
+  useDineInLockGuard();
   const nav = useNavigate();
   const setMode = useCart((s) => s.setMode);
   const setRestaurant = useCart((s) => s.setRestaurant);

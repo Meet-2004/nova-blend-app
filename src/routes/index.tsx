@@ -4,12 +4,13 @@ import { ArrowRight, QrCode, Sparkles, Timer, Utensils } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { GradientBlobs } from "@/components/ui/GradientBlobs";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { useSessionGuard } from "@/hooks/useSessionGuard";
+import { useSessionGuard, useDineInLockGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
 function Landing() {
   useSessionGuard();
+  useDineInLockGuard();
   return (
     <div className="relative min-h-screen overflow-hidden">
       <GradientBlobs />

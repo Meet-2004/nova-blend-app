@@ -4,12 +4,13 @@ import { QrCode, ShoppingBag, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useCart } from "@/store/cart";
-import { useSessionGuard } from "@/hooks/useSessionGuard";
+import { useSessionGuard, useDineInLockGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/mode")({ component: ModeSelect });
 
 function ModeSelect() {
   useSessionGuard();
+  useDineInLockGuard();
   const nav = useNavigate();
   const setMode = useCart((s) => s.setMode);
 

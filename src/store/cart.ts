@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export type ServingMode = "dine-in" | "takeaway";
 export type SessionStatus = "idle" | "active" | "completed";
 export type TakeawayStatus = "received" | "preparing" | "ready" | "completed";
+export type BillStatus = "none" | "generated" | "paid";
 
 export interface CartItem {
   id: string;
@@ -23,6 +24,8 @@ interface CartState {
   tableNumber: string | null;
   items: CartItem[];
   orderId: string | null;
+  // bill state (dine-in)
+  billStatus: BillStatus;
   // takeaway-only
   phone: string | null;
   isPaid: boolean;
@@ -40,7 +43,11 @@ interface CartState {
   clear: () => void;
   placeOrder: () => string;
   markPaid: () => void;
+  generateBill: () => void;
+  completeBillPayment: () => void;
   setTakeawayStatus: (s: TakeawayStatus) => void;
+  canAddFromRestaurant: (restaurantId: string) => boolean;
+  clearAndSwitchRestaurant: (id: string, name: string) => void;
 }
 
 export const useCart = create<CartState>()(
@@ -53,14 +60,19 @@ export const useCart = create<CartState>()(
       tableNumber: null,
       items: [],
       orderId: null,
+      billStatus: "none",
       phone: null,
       isPaid: false,
       takeawayStatus: "received",
+
       setMode: (mode) => set({ mode }),
       setPhone: (phone) => set({ phone }),
+
       setRestaurant: (id, name, table = null) =>
         set({ restaurantId: id, restaurantName: name, tableNumber: table, sessionStatus: "active" }),
+
       startSession: () => set({ sessionStatus: "active" }),
+
       endSession: () =>
         set({
           sessionStatus: "idle",
@@ -70,9 +82,11 @@ export const useCart = create<CartState>()(
           tableNumber: null,
           items: [],
           orderId: null,
+          billStatus: "none",
           isPaid: false,
           takeawayStatus: "received",
         }),
+
       add: (item) => {
         const existing = get().items.find((i) => i.id === item.id);
         if (existing) {
@@ -81,25 +95,57 @@ export const useCart = create<CartState>()(
           set({ items: [...get().items, { ...item, qty: 1 }] });
         }
       },
+
       remove: (id) => set({ items: get().items.filter((i) => i.id !== id) }),
+
       increment: (id) =>
         set({ items: get().items.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i)) }),
+
       decrement: (id) =>
         set({
           items: get()
             .items.map((i) => (i.id === id ? { ...i, qty: i.qty - 1 } : i))
             .filter((i) => i.qty > 0),
         }),
-      clear: () => set({ items: [], orderId: null }),
+
+      clear: () => set({ items: [], orderId: null, billStatus: "none" }),
+
       placeOrder: () => {
         const id = "ORD-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        set({ orderId: id, sessionStatus: "active" });
+        set({ orderId: id, sessionStatus: "active", billStatus: "none" });
         return id;
       },
+
       markPaid: () => set({ isPaid: true }),
+
+      generateBill: () => set({ billStatus: "generated" }),
+
+      completeBillPayment: () => set({ billStatus: "paid" }),
+
       setTakeawayStatus: (takeawayStatus) => set({ takeawayStatus }),
+
+      canAddFromRestaurant: (restaurantId: string) => {
+        const { items, restaurantId: currentId, mode } = get();
+        if (mode === "dine-in") return true;
+        if (items.length === 0) return true;
+        return currentId === restaurantId;
+      },
+
+      clearAndSwitchRestaurant: (id: string, name: string) => {
+        set({
+          items: [],
+          orderId: null,
+          billStatus: "none",
+          isPaid: false,
+          takeawayStatus: "received",
+          restaurantId: id,
+          restaurantName: name,
+          tableNumber: null,
+          sessionStatus: "active",
+        });
+      },
     }),
-    { name: "plate-cart-v2" }
+    { name: "plate-cart-v3" }
   )
 );
 
@@ -108,3 +154,10 @@ export const selectSubtotal = (s: CartState) =>
 export const selectCount = (s: CartState) => s.items.reduce((n, i) => n + i.qty, 0);
 export const selectIsActiveSession = (s: CartState) =>
   s.sessionStatus === "active" && !!s.restaurantId && !!s.mode;
+
+// True when dine-in order is placed and bill not yet paid — session is locked
+export const selectIsDineInLocked = (s: CartState) =>
+  s.mode === "dine-in" &&
+  s.sessionStatus === "active" &&
+  !!s.orderId &&
+  s.billStatus !== "paid";

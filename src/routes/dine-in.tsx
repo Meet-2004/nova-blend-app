@@ -3,10 +3,12 @@ import { motion } from "framer-motion";
 import { QrCode, MapPin, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
+import { useDineInLockGuard } from "@/hooks/useSessionGuard";
 
 export const Route = createFileRoute("/dine-in")({ component: DineInChooser });
 
 function DineInChooser() {
+  useDineInLockGuard();
   return (
     <Container className="min-h-screen pb-10">
       <TopBar title="Start dine-in" />
