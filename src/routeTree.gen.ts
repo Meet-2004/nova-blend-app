@@ -19,6 +19,7 @@ import { Route as DineInSearchRouteImport } from './routes/dine-in-search'
 import { Route as DineInRouteImport } from './routes/dine-in'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TakeawayOrderIdRouteImport } from './routes/takeaway-order.$id'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as RestaurantIdMenuRouteImport } from './routes/restaurant.$id.menu'
 import { Route as OrderIdBillRouteImport } from './routes/order.$id.bill'
@@ -73,6 +74,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TakeawayOrderIdRoute = TakeawayOrderIdRouteImport.update({
+  id: '/takeaway-order/$id',
+  path: '/takeaway-order/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrderIdRoute = OrderIdRouteImport.update({
   id: '/order/$id',
   path: '/order/$id',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   TakeawayPaymentRoute: typeof TakeawayPaymentRoute
   TakeawayRestaurantsRoute: typeof TakeawayRestaurantsRoute
   OrderIdRoute: typeof OrderIdRouteWithChildren
+  TakeawayOrderIdRoute: typeof TakeawayOrderIdRoute
   RestaurantIdMenuRoute: typeof RestaurantIdMenuRoute
 }
 
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/takeaway-order/$id': {
+      id: '/takeaway-order/$id'
+      path: '/takeaway-order/$id'
+      fullPath: '/takeaway-order/$id'
+      preLoaderRoute: typeof TakeawayOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/order/$id': {
       id: '/order/$id'
       path: '/order/$id'
@@ -317,6 +337,7 @@ const rootRouteChildren: RootRouteChildren = {
   TakeawayPaymentRoute: TakeawayPaymentRoute,
   TakeawayRestaurantsRoute: TakeawayRestaurantsRoute,
   OrderIdRoute: OrderIdRouteWithChildren,
+  TakeawayOrderIdRoute: TakeawayOrderIdRoute,
   RestaurantIdMenuRoute: RestaurantIdMenuRoute,
 }
 export const routeTree = rootRouteImport
