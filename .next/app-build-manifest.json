@@ -11,11 +11,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
-    ],
     "/(customer)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -25,6 +20,56 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(customer)/page.js"
+    ],
+    "/(customer)/order/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/order/[id]/page.js"
+    ],
+    "/(customer)/takeaway-login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/takeaway-login/page.js"
+    ],
+    "/restaurant/[id]/menu/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/restaurant/[id]/menu/page.js"
+    ],
+    "/(customer)/takeaway-restaurants/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/takeaway-restaurants/page.js"
+    ],
+    "/(customer)/cart/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/cart/page.js"
+    ],
+    "/(customer)/takeaway-payment/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/takeaway-payment/page.js"
+    ],
+    "/(customer)/takeaway-order/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/takeaway-order/[id]/page.js"
+    ],
+    "/(customer)/dine-in/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/dine-in/page.js"
+    ],
+    "/(customer)/scan/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/scan/page.js"
+    ],
+    "/(customer)/order/[id]/bill/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(customer)/order/[id]/bill/page.js"
     ]
   }
 }

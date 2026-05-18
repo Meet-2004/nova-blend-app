@@ -1,3 +1,9 @@
 {
-  "/(customer)/page": "app/(customer)/page.js"
+  "/restaurant/[id]/menu/page": "app/restaurant/[id]/menu/page.js",
+  "/(customer)/scan/page": "app/(customer)/scan/page.js",
+  "/(customer)/cart/page": "app/(customer)/cart/page.js",
+  "/(customer)/order/[id]/page": "app/(customer)/order/[id]/page.js",
+  "/(customer)/order/[id]/bill/page": "app/(customer)/order/[id]/bill/page.js",
+  "/(customer)/page": "app/(customer)/page.js",
+  "/(customer)/dine-in/page": "app/(customer)/dine-in/page.js"
 }

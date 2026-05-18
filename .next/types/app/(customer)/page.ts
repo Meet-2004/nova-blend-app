@@ -1,4 +1,4 @@
-// File: /home/project/app/(customer)/page.jsx
+// File: D:\web devloment 2\Apna college React\Hotel Ordering System\nova-blend-app\app\(customer)\page.jsx
 import * as entry from '../../../../app/(customer)/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
