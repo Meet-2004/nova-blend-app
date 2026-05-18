@@ -63,8 +63,8 @@ function Landing() {
           </Link>
 
           <div className="grid grid-cols-2 gap-3">
-            <Link to="/scan"><FeatureTile icon={<QrCode className="h-5 w-5" />} label="Scan QR" hint="Dine-in fast track" /></Link>
-            <Link to="/restaurants"><FeatureTile icon={<Timer className="h-5 w-5" />} label="Pre-order" hint="Takeaway in minutes" /></Link>
+            <Link to="/dine-in"><FeatureTile icon={<QrCode className="h-5 w-5" />} label="Dine-in" hint="QR or search" /></Link>
+            <Link to="/takeaway-login"><FeatureTile icon={<Timer className="h-5 w-5" />} label="Takeaway" hint="Pre-order in minutes" /></Link>
           </div>
         </motion.div>
 
