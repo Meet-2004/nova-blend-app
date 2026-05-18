@@ -9,15 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TakeawayRestaurantsRouteImport } from './routes/takeaway-restaurants'
+import { Route as TakeawayPaymentRouteImport } from './routes/takeaway-payment'
+import { Route as TakeawayLoginRouteImport } from './routes/takeaway-login'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as ModeRouteImport } from './routes/mode'
+import { Route as DineInSearchRouteImport } from './routes/dine-in-search'
+import { Route as DineInRouteImport } from './routes/dine-in'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TakeawayOrderIdRouteImport } from './routes/takeaway-order.$id'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as RestaurantIdMenuRouteImport } from './routes/restaurant.$id.menu'
 import { Route as OrderIdBillRouteImport } from './routes/order.$id.bill'
 
+const TakeawayRestaurantsRoute = TakeawayRestaurantsRouteImport.update({
+  id: '/takeaway-restaurants',
+  path: '/takeaway-restaurants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TakeawayPaymentRoute = TakeawayPaymentRouteImport.update({
+  id: '/takeaway-payment',
+  path: '/takeaway-payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TakeawayLoginRoute = TakeawayLoginRouteImport.update({
+  id: '/takeaway-login',
+  path: '/takeaway-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScanRoute = ScanRouteImport.update({
   id: '/scan',
   path: '/scan',
@@ -33,6 +54,16 @@ const ModeRoute = ModeRouteImport.update({
   path: '/mode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DineInSearchRoute = DineInSearchRouteImport.update({
+  id: '/dine-in-search',
+  path: '/dine-in-search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DineInRoute = DineInRouteImport.update({
+  id: '/dine-in',
+  path: '/dine-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -41,6 +72,11 @@ const CartRoute = CartRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TakeawayOrderIdRoute = TakeawayOrderIdRouteImport.update({
+  id: '/takeaway-order/$id',
+  path: '/takeaway-order/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrderIdRoute = OrderIdRouteImport.update({
@@ -62,20 +98,32 @@ const OrderIdBillRoute = OrderIdBillRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
+  '/dine-in-search': typeof DineInSearchRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
+  '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
+  '/dine-in-search': typeof DineInSearchRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
+  '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
@@ -83,10 +131,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
+  '/dine-in-search': typeof DineInSearchRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
+  '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
+  '/takeaway-order/$id': typeof TakeawayOrderIdRoute
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
 }
@@ -95,30 +149,48 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/cart'
+    | '/dine-in'
+    | '/dine-in-search'
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
+    | '/takeaway-payment'
+    | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cart'
+    | '/dine-in'
+    | '/dine-in-search'
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
+    | '/takeaway-payment'
+    | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   id:
     | '__root__'
     | '/'
     | '/cart'
+    | '/dine-in'
+    | '/dine-in-search'
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
+    | '/takeaway-payment'
+    | '/takeaway-restaurants'
     | '/order/$id'
+    | '/takeaway-order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
   fileRoutesById: FileRoutesById
@@ -126,15 +198,42 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CartRoute: typeof CartRoute
+  DineInRoute: typeof DineInRoute
+  DineInSearchRoute: typeof DineInSearchRoute
   ModeRoute: typeof ModeRoute
   RestaurantsRoute: typeof RestaurantsRoute
   ScanRoute: typeof ScanRoute
+  TakeawayLoginRoute: typeof TakeawayLoginRoute
+  TakeawayPaymentRoute: typeof TakeawayPaymentRoute
+  TakeawayRestaurantsRoute: typeof TakeawayRestaurantsRoute
   OrderIdRoute: typeof OrderIdRouteWithChildren
+  TakeawayOrderIdRoute: typeof TakeawayOrderIdRoute
   RestaurantIdMenuRoute: typeof RestaurantIdMenuRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/takeaway-restaurants': {
+      id: '/takeaway-restaurants'
+      path: '/takeaway-restaurants'
+      fullPath: '/takeaway-restaurants'
+      preLoaderRoute: typeof TakeawayRestaurantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/takeaway-payment': {
+      id: '/takeaway-payment'
+      path: '/takeaway-payment'
+      fullPath: '/takeaway-payment'
+      preLoaderRoute: typeof TakeawayPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/takeaway-login': {
+      id: '/takeaway-login'
+      path: '/takeaway-login'
+      fullPath: '/takeaway-login'
+      preLoaderRoute: typeof TakeawayLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scan': {
       id: '/scan'
       path: '/scan'
@@ -156,6 +255,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dine-in-search': {
+      id: '/dine-in-search'
+      path: '/dine-in-search'
+      fullPath: '/dine-in-search'
+      preLoaderRoute: typeof DineInSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dine-in': {
+      id: '/dine-in'
+      path: '/dine-in'
+      fullPath: '/dine-in'
+      preLoaderRoute: typeof DineInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cart': {
       id: '/cart'
       path: '/cart'
@@ -168,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/takeaway-order/$id': {
+      id: '/takeaway-order/$id'
+      path: '/takeaway-order/$id'
+      fullPath: '/takeaway-order/$id'
+      preLoaderRoute: typeof TakeawayOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/order/$id': {
@@ -208,10 +328,16 @@ const OrderIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
+  DineInRoute: DineInRoute,
+  DineInSearchRoute: DineInSearchRoute,
   ModeRoute: ModeRoute,
   RestaurantsRoute: RestaurantsRoute,
   ScanRoute: ScanRoute,
+  TakeawayLoginRoute: TakeawayLoginRoute,
+  TakeawayPaymentRoute: TakeawayPaymentRoute,
+  TakeawayRestaurantsRoute: TakeawayRestaurantsRoute,
   OrderIdRoute: OrderIdRouteWithChildren,
+  TakeawayOrderIdRoute: TakeawayOrderIdRoute,
   RestaurantIdMenuRoute: RestaurantIdMenuRoute,
 }
 export const routeTree = rootRouteImport
