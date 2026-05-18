@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TakeawayLoginRouteImport } from './routes/takeaway-login'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as ModeRouteImport } from './routes/mode'
@@ -20,6 +21,11 @@ import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as RestaurantIdMenuRouteImport } from './routes/restaurant.$id.menu'
 import { Route as OrderIdBillRouteImport } from './routes/order.$id.bill'
 
+const TakeawayLoginRoute = TakeawayLoginRouteImport.update({
+  id: '/takeaway-login',
+  path: '/takeaway-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScanRoute = ScanRouteImport.update({
   id: '/scan',
   path: '/scan',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
+  '/takeaway-login': typeof TakeawayLoginRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
   '/restaurant/$id/menu': typeof RestaurantIdMenuRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
     | '/order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
     | '/order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/mode'
     | '/restaurants'
     | '/scan'
+    | '/takeaway-login'
     | '/order/$id'
     | '/order/$id/bill'
     | '/restaurant/$id/menu'
@@ -155,12 +167,20 @@ export interface RootRouteChildren {
   ModeRoute: typeof ModeRoute
   RestaurantsRoute: typeof RestaurantsRoute
   ScanRoute: typeof ScanRoute
+  TakeawayLoginRoute: typeof TakeawayLoginRoute
   OrderIdRoute: typeof OrderIdRouteWithChildren
   RestaurantIdMenuRoute: typeof RestaurantIdMenuRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/takeaway-login': {
+      id: '/takeaway-login'
+      path: '/takeaway-login'
+      fullPath: '/takeaway-login'
+      preLoaderRoute: typeof TakeawayLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scan': {
       id: '/scan'
       path: '/scan'
@@ -253,6 +273,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModeRoute: ModeRoute,
   RestaurantsRoute: RestaurantsRoute,
   ScanRoute: ScanRoute,
+  TakeawayLoginRoute: TakeawayLoginRoute,
   OrderIdRoute: OrderIdRouteWithChildren,
   RestaurantIdMenuRoute: RestaurantIdMenuRoute,
 }
