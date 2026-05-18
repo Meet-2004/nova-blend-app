@@ -1,4 +1,4 @@
-// File: /home/project/app/layout.js
+// File: D:\web devloment 2\Apna college React\Hotel Ordering System\nova-blend-app\app\layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,1 +1,204 @@
-{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/order/[id]",
+      "regex": "^/order/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/order/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/order/[id]/bill",
+      "regex": "^/order/([^/]+?)/bill(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/order/(?<nxtPid>[^/]+?)/bill(?:/)?$"
+    },
+    {
+      "page": "/restaurant/[id]/bill",
+      "regex": "^/restaurant/([^/]+?)/bill(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/restaurant/(?<nxtPid>[^/]+?)/bill(?:/)?$"
+    },
+    {
+      "page": "/restaurant/[id]/menu",
+      "regex": "^/restaurant/([^/]+?)/menu(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/restaurant/(?<nxtPid>[^/]+?)/menu(?:/)?$"
+    },
+    {
+      "page": "/restaurant/[id]/tracking",
+      "regex": "^/restaurant/([^/]+?)/tracking(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/restaurant/(?<nxtPid>[^/]+?)/tracking(?:/)?$"
+    },
+    {
+      "page": "/takeaway-order/[id]",
+      "regex": "^/takeaway\\-order/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/takeaway\\-order/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin/billing",
+      "regex": "^/admin/billing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/billing(?:/)?$"
+    },
+    {
+      "page": "/admin/dashboard",
+      "regex": "^/admin/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/dashboard(?:/)?$"
+    },
+    {
+      "page": "/admin/menu",
+      "regex": "^/admin/menu(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/menu(?:/)?$"
+    },
+    {
+      "page": "/admin/orders",
+      "regex": "^/admin/orders(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/orders(?:/)?$"
+    },
+    {
+      "page": "/admin/tables",
+      "regex": "^/admin/tables(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/tables(?:/)?$"
+    },
+    {
+      "page": "/cart",
+      "regex": "^/cart(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cart(?:/)?$"
+    },
+    {
+      "page": "/dine-in",
+      "regex": "^/dine\\-in(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dine\\-in(?:/)?$"
+    },
+    {
+      "page": "/dine-in-search",
+      "regex": "^/dine\\-in\\-search(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dine\\-in\\-search(?:/)?$"
+    },
+    {
+      "page": "/kitchen/dashboard",
+      "regex": "^/kitchen/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/kitchen/dashboard(?:/)?$"
+    },
+    {
+      "page": "/mode",
+      "regex": "^/mode(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mode(?:/)?$"
+    },
+    {
+      "page": "/scan",
+      "regex": "^/scan(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/scan(?:/)?$"
+    },
+    {
+      "page": "/super-admin/analytics",
+      "regex": "^/super\\-admin/analytics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/super\\-admin/analytics(?:/)?$"
+    },
+    {
+      "page": "/super-admin/dashboard",
+      "regex": "^/super\\-admin/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/super\\-admin/dashboard(?:/)?$"
+    },
+    {
+      "page": "/super-admin/restaurants",
+      "regex": "^/super\\-admin/restaurants(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/super\\-admin/restaurants(?:/)?$"
+    },
+    {
+      "page": "/takeaway-login",
+      "regex": "^/takeaway\\-login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/takeaway\\-login(?:/)?$"
+    },
+    {
+      "page": "/takeaway-payment",
+      "regex": "^/takeaway\\-payment(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/takeaway\\-payment(?:/)?$"
+    },
+    {
+      "page": "/takeaway-restaurants",
+      "regex": "^/takeaway\\-restaurants(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/takeaway\\-restaurants(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
