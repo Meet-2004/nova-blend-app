@@ -7,9 +7,7 @@ import { selectIsDineInLocked, selectIsActiveSession } from "@/store/slices/dine
 
 /**
  * useSessionGuard — used on public/landing pages.
- * If a dine-in session is locked (order placed, bill not paid),
- * redirects user to their active order.
- * If a pre-order session is active, restores user into their flow.
+ * Redirects users with active sessions back into their flow.
  */
 export function useSessionGuard() {
   const router = useRouter();
@@ -23,7 +21,6 @@ export function useSessionGuard() {
   const isPaid = useSelector((s) => s.dineIn.isPaid);
 
   useEffect(() => {
-    // Dine-in locked: order placed, bill not yet paid
     if (isDineInLocked && orderId) {
       const isOnOrderPages = pathname.startsWith(`/order/${orderId}`);
       if (!isOnOrderPages) {
@@ -34,7 +31,6 @@ export function useSessionGuard() {
 
     if (sessionStatus !== "active" || !restaurantId || !mode) return;
 
-    // Dine-in pre-order: send to menu
     if (mode === "dine-in" && !orderId) {
       const isOnMenuOrCart =
         pathname === `/restaurant/${restaurantId}/menu` || pathname === "/cart";
@@ -44,7 +40,6 @@ export function useSessionGuard() {
       return;
     }
 
-    // Takeaway: restore based on payment state
     if (mode === "takeaway") {
       if (orderId && isPaid) {
         const isOnTakeaway = pathname.startsWith(`/takeaway-order/${orderId}`);
@@ -62,7 +57,7 @@ export function useSessionGuard() {
 
 /**
  * useDineInLockGuard — place on pages that must not be accessible during
- * an active locked dine-in session (landing, mode, scan, dine-in, restaurants).
+ * an active locked dine-in session (landing, mode, scan, dine-in, etc.).
  */
 export function useDineInLockGuard() {
   const router = useRouter();
@@ -74,4 +69,35 @@ export function useDineInLockGuard() {
       router.replace(`/order/${orderId}`);
     }
   }, [isDineInLocked, orderId, router]);
+}
+
+/**
+ * useTakeawayAuthGuard — ensures user has authenticated (phone + OTP)
+ * before accessing takeaway routes.
+ */
+export function useTakeawayAuthGuard() {
+  const router = useRouter();
+  const phone = useSelector((s) => s.auth.phone);
+  const isVerified = useSelector((s) => s.auth.isVerified);
+
+  useEffect(() => {
+    if (!phone || !isVerified) {
+      router.replace("/takeaway-login");
+    }
+  }, [phone, isVerified, router]);
+}
+
+/**
+ * useTakeawayCartGuard — ensures user has items in cart before payment.
+ */
+export function useTakeawayCartGuard() {
+  const router = useRouter();
+  const itemCount = useSelector((s) => s.cart.items.length);
+  const mode = useSelector((s) => s.dineIn.mode);
+
+  useEffect(() => {
+    if (mode !== "takeaway" || itemCount === 0) {
+      router.replace("/takeaway-restaurants");
+    }
+  }, [mode, itemCount, router]);
 }
