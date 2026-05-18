@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as ModeRouteImport } from './routes/mode'
+import { Route as DineInRouteImport } from './routes/dine-in'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
@@ -31,6 +32,11 @@ const RestaurantsRoute = RestaurantsRouteImport.update({
 const ModeRoute = ModeRouteImport.update({
   id: '/mode',
   path: '/mode',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DineInRoute = DineInRouteImport.update({
+  id: '/dine-in',
+  path: '/dine-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -62,6 +68,7 @@ const OrderIdBillRoute = OrderIdBillRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/dine-in': typeof DineInRoute
   '/mode': typeof ModeRoute
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/cart'
+    | '/dine-in'
     | '/mode'
     | '/restaurants'
     | '/scan'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/cart'
+    | '/dine-in'
     | '/mode'
     | '/restaurants'
     | '/scan'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/cart'
+    | '/dine-in'
     | '/mode'
     | '/restaurants'
     | '/scan'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CartRoute: typeof CartRoute
+  DineInRoute: typeof DineInRoute
   ModeRoute: typeof ModeRoute
   RestaurantsRoute: typeof RestaurantsRoute
   ScanRoute: typeof ScanRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/mode'
       fullPath: '/mode'
       preLoaderRoute: typeof ModeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dine-in': {
+      id: '/dine-in'
+      path: '/dine-in'
+      fullPath: '/dine-in'
+      preLoaderRoute: typeof DineInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -208,6 +228,7 @@ const OrderIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
+  DineInRoute: DineInRoute,
   ModeRoute: ModeRoute,
   RestaurantsRoute: RestaurantsRoute,
   ScanRoute: ScanRoute,
@@ -217,3 +238,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
