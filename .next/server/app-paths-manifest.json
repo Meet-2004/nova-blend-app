@@ -1,27 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/restaurant/[id]/bill/page": "app/restaurant/[id]/bill/page.js",
   "/restaurant/[id]/menu/page": "app/restaurant/[id]/menu/page.js",
-  "/restaurant/[id]/tracking/page": "app/restaurant/[id]/tracking/page.js",
-  "/(admin)/admin/billing/page": "app/(admin)/admin/billing/page.js",
-  "/(admin)/admin/dashboard/page": "app/(admin)/admin/dashboard/page.js",
-  "/(customer)/cart/page": "app/(customer)/cart/page.js",
-  "/(admin)/admin/tables/page": "app/(admin)/admin/tables/page.js",
-  "/(customer)/dine-in-search/page": "app/(customer)/dine-in-search/page.js",
-  "/(admin)/admin/menu/page": "app/(admin)/admin/menu/page.js",
-  "/(customer)/mode/page": "app/(customer)/mode/page.js",
-  "/(customer)/dine-in/page": "app/(customer)/dine-in/page.js",
-  "/(customer)/order/[id]/bill/page": "app/(customer)/order/[id]/bill/page.js",
-  "/(customer)/page": "app/(customer)/page.js",
-  "/(customer)/order/[id]/page": "app/(customer)/order/[id]/page.js",
-  "/(customer)/scan/page": "app/(customer)/scan/page.js",
-  "/(customer)/takeaway-order/[id]/page": "app/(customer)/takeaway-order/[id]/page.js",
-  "/(customer)/takeaway-login/page": "app/(customer)/takeaway-login/page.js",
-  "/(super-admin)/super-admin/analytics/page": "app/(super-admin)/super-admin/analytics/page.js",
-  "/(kitchen)/kitchen/dashboard/page": "app/(kitchen)/kitchen/dashboard/page.js",
-  "/(admin)/admin/orders/page": "app/(admin)/admin/orders/page.js",
-  "/(super-admin)/super-admin/dashboard/page": "app/(super-admin)/super-admin/dashboard/page.js",
-  "/(customer)/takeaway-restaurants/page": "app/(customer)/takeaway-restaurants/page.js",
-  "/(customer)/takeaway-payment/page": "app/(customer)/takeaway-payment/page.js",
-  "/(super-admin)/super-admin/restaurants/page": "app/(super-admin)/super-admin/restaurants/page.js"
+  "/(customer)/order/[id]/page": "app/(customer)/order/[id]/page.js"
 }
