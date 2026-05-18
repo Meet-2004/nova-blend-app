@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TakeawayRestaurantsRouteImport } from './routes/takeaway-restaurants'
+import { Route as TakeawayPaymentRouteImport } from './routes/takeaway-payment'
 import { Route as TakeawayLoginRouteImport } from './routes/takeaway-login'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
@@ -25,6 +26,11 @@ import { Route as OrderIdBillRouteImport } from './routes/order.$id.bill'
 const TakeawayRestaurantsRoute = TakeawayRestaurantsRouteImport.update({
   id: '/takeaway-restaurants',
   path: '/takeaway-restaurants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TakeawayPaymentRoute = TakeawayPaymentRouteImport.update({
+  id: '/takeaway-payment',
+  path: '/takeaway-payment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TakeawayLoginRoute = TakeawayLoginRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
   '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
   '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/restaurants': typeof RestaurantsRoute
   '/scan': typeof ScanRoute
   '/takeaway-login': typeof TakeawayLoginRoute
+  '/takeaway-payment': typeof TakeawayPaymentRoute
   '/takeaway-restaurants': typeof TakeawayRestaurantsRoute
   '/order/$id': typeof OrderIdRouteWithChildren
   '/order/$id/bill': typeof OrderIdBillRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/restaurants'
     | '/scan'
     | '/takeaway-login'
+    | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
     | '/order/$id/bill'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/restaurants'
     | '/scan'
     | '/takeaway-login'
+    | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
     | '/order/$id/bill'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/restaurants'
     | '/scan'
     | '/takeaway-login'
+    | '/takeaway-payment'
     | '/takeaway-restaurants'
     | '/order/$id'
     | '/order/$id/bill'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   RestaurantsRoute: typeof RestaurantsRoute
   ScanRoute: typeof ScanRoute
   TakeawayLoginRoute: typeof TakeawayLoginRoute
+  TakeawayPaymentRoute: typeof TakeawayPaymentRoute
   TakeawayRestaurantsRoute: typeof TakeawayRestaurantsRoute
   OrderIdRoute: typeof OrderIdRouteWithChildren
   RestaurantIdMenuRoute: typeof RestaurantIdMenuRoute
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/takeaway-restaurants'
       fullPath: '/takeaway-restaurants'
       preLoaderRoute: typeof TakeawayRestaurantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/takeaway-payment': {
+      id: '/takeaway-payment'
+      path: '/takeaway-payment'
+      fullPath: '/takeaway-payment'
+      preLoaderRoute: typeof TakeawayPaymentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/takeaway-login': {
@@ -294,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   RestaurantsRoute: RestaurantsRoute,
   ScanRoute: ScanRoute,
   TakeawayLoginRoute: TakeawayLoginRoute,
+  TakeawayPaymentRoute: TakeawayPaymentRoute,
   TakeawayRestaurantsRoute: TakeawayRestaurantsRoute,
   OrderIdRoute: OrderIdRouteWithChildren,
   RestaurantIdMenuRoute: RestaurantIdMenuRoute,
@@ -301,3 +322,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
