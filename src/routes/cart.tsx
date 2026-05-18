@@ -23,10 +23,20 @@ function CartPage() {
     items: items.filter((i) => i.group === g.id),
   })).filter((s) => s.items.length > 0);
 
-  const onPlace = () => {
+  const onPrimary = () => {
+    if (mode === "takeaway") {
+      // Takeaway pays BEFORE the order is confirmed
+      nav({ to: "/takeaway-payment" });
+      return;
+    }
     const id = placeOrder();
     nav({ to: "/order/$id", params: { id } });
   };
+
+  const ctaLabel =
+    mode === "takeaway"
+      ? `Pay & confirm · ${formatPrice(total)}`
+      : `Place order · ${formatPrice(total)}`;
 
   if (items.length === 0) {
     return (
