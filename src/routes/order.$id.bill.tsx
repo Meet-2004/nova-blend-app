@@ -15,7 +15,7 @@ type Method = "upi" | "card" | "cash";
 function Bill() {
   const nav = useNavigate();
   const { id } = useParams({ from: "/order/$id/bill" });
-  const { items, mode, restaurantName, tableNumber, clear } = useCart();
+  const { items, mode, restaurantName, tableNumber, endSession } = useCart();
   const subtotal = useCart(selectSubtotal);
   const taxes = Math.round(subtotal * 0.05);
   const service = mode === "dine-in" ? Math.round(subtotal * 0.05) : 0;
@@ -27,7 +27,7 @@ function Bill() {
   const pay = () => {
     setPaid(true);
     setTimeout(() => {
-      clear();
+      endSession();
       nav({ to: "/" });
     }, 1800);
   };
