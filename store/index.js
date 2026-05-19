@@ -6,11 +6,14 @@ import cartReducer from "./slices/cartSlice";
 import dineInReducer from "./slices/dineInSlice";
 import takeawayReducer from "./slices/takeawaySlice";
 import uiReducer from "./slices/uiSlice";
+import ordersReducer from "./slices/ordersSlice";
+import tablesReducer from "./slices/tablesSlice";
+import menuReducer from "./slices/menuSlice";
 
 const persistConfig = {
   key: "plate-cart-v5",
   storage,
-  whitelist: ["auth", "cart", "dineIn", "takeaway"],
+  whitelist: ["auth", "cart", "dineIn", "takeaway", "orders", "tables", "menu"],
 };
 
 const rootReducer = {
@@ -19,6 +22,9 @@ const rootReducer = {
   dineIn: dineInReducer,
   takeaway: takeawayReducer,
   ui: uiReducer,
+  orders: ordersReducer,
+  tables: tablesReducer,
+  menu: menuReducer,
 };
 
 const persistedRootReducer = (state, action) => {
@@ -39,6 +45,9 @@ const persistedReducer = persistReducer(persistConfig, (state, action) => {
         dineIn: dineInReducer(incoming.dineIn, action),
         takeaway: takeawayReducer(incoming.takeaway, action),
         ui: uiReducer(undefined, action),
+        orders: ordersReducer(incoming.orders, action),
+        tables: tablesReducer(incoming.tables, action),
+        menu: menuReducer(incoming.menu, action),
       };
     }
   }
