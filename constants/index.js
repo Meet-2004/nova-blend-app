@@ -6,7 +6,6 @@ export const SERVING_MODES = {
 export const SESSION_STATUS = {
   IDLE: "idle",
   ACTIVE: "active",
-  COMPLETED: "completed",
 };
 
 export const BILL_STATUS = {
@@ -15,40 +14,37 @@ export const BILL_STATUS = {
   PAID: "paid",
 };
 
-export const BATCH_STATUS = {
-  RECEIVED: "received",
-  PREPARING: "preparing",
-  COOKING: "cooking",
-  SERVING: "serving",
-  SERVED: "served",
-  SCHEDULED: "scheduled",
+// The lifecycle of a single order group
+export const GROUP_STATUS = {
+  SCHEDULED: "scheduled",  // delayed order, not yet started
+  RECEIVED: "received",    // kitchen received it
+  PREPARING: "preparing",  // kitchen is working on it
+  COOKING: "cooking",      // actively cooking
+  SERVED: "served",        // delivered to table
 };
 
-export const BATCH_STATUS_ORDER = [
-  BATCH_STATUS.SCHEDULED,
-  BATCH_STATUS.RECEIVED,
-  BATCH_STATUS.PREPARING,
-  BATCH_STATUS.COOKING,
-  BATCH_STATUS.SERVING,
-  BATCH_STATUS.SERVED,
+// Progress order (excluding SCHEDULED since it's a holding state)
+export const GROUP_STATUS_ACTIVE_ORDER = [
+  GROUP_STATUS.RECEIVED,
+  GROUP_STATUS.PREPARING,
+  GROUP_STATUS.COOKING,
+  GROUP_STATUS.SERVED,
 ];
 
-export const BATCH_STATUS_LABELS = {
-  [BATCH_STATUS.SCHEDULED]: "Scheduled",
-  [BATCH_STATUS.RECEIVED]: "Order received",
-  [BATCH_STATUS.PREPARING]: "Preparing",
-  [BATCH_STATUS.COOKING]: "Cooking",
-  [BATCH_STATUS.SERVING]: "Being served",
-  [BATCH_STATUS.SERVED]: "Served",
+export const GROUP_STATUS_LABELS = {
+  [GROUP_STATUS.SCHEDULED]: "Scheduled",
+  [GROUP_STATUS.RECEIVED]: "Received",
+  [GROUP_STATUS.PREPARING]: "Preparing",
+  [GROUP_STATUS.COOKING]: "Cooking",
+  [GROUP_STATUS.SERVED]: "Served",
 };
 
-export const BATCH_STATUS_DESC = {
-  [BATCH_STATUS.SCHEDULED]: "Will start at the scheduled time.",
-  [BATCH_STATUS.RECEIVED]: "Your order is confirmed.",
-  [BATCH_STATUS.PREPARING]: "Kitchen is working on it.",
-  [BATCH_STATUS.COOKING]: "Your food is being cooked.",
-  [BATCH_STATUS.SERVING]: "On its way to your table!",
-  [BATCH_STATUS.SERVED]: "All items at your table.",
+export const GROUP_STATUS_DESC = {
+  [GROUP_STATUS.SCHEDULED]: "Will start at the scheduled time.",
+  [GROUP_STATUS.RECEIVED]: "Your order is confirmed.",
+  [GROUP_STATUS.PREPARING]: "Kitchen is working on it.",
+  [GROUP_STATUS.COOKING]: "Your food is being cooked.",
+  [GROUP_STATUS.SERVED]: "All items at your table. Enjoy!",
 };
 
 export const SERVING_TIME_OPTIONS = [
@@ -65,6 +61,12 @@ export const TAKEAWAY_STATUSES = [
   { id: "ready", label: "Ready for pickup", desc: "Head to the counter!" },
   { id: "completed", label: "Completed", desc: "Enjoy your meal!" },
 ];
+
+// Legacy aliases so existing code doesn't break during refactor
+export const BATCH_STATUS = GROUP_STATUS;
+export const BATCH_STATUS_ORDER = GROUP_STATUS_ACTIVE_ORDER;
+export const BATCH_STATUS_LABELS = GROUP_STATUS_LABELS;
+export const BATCH_STATUS_DESC = GROUP_STATUS_DESC;
 
 export const OTP_LENGTH = 4;
 export const OTP_RESEND_COOLDOWN = 30;

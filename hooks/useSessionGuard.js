@@ -3,60 +3,75 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
-import { selectIsDineInLocked, selectIsActiveSession, selectIsBillGenerated } from "@/store/slices/dineInSlice";
+import {
+  selectIsActiveSession,
+  selectIsBillGenerated,
+} from "@/store/slices/dineInSlice";
 
+/**
+ * Global session guard.
+ *
+ * Dine-in rules:
+ *   - Before bill: user can freely visit menu, cart, and tracking pages.
+ *   - After bill generated: lock to /order/:id/bill.
+ *
+ * Takeaway rules:
+ *   - After paid: lock to /takeaway-order/:id.
+ *   - Placed but not yet paid: lock to /takeaway-payment.
+ */
 export function useSessionGuard() {
   const router = useRouter();
   const pathname = usePathname();
-  const isDineInLocked = useSelector(selectIsDineInLocked);
-  const isActiveSession = useSelector(selectIsActiveSession);
   const isBillGenerated = useSelector(selectIsBillGenerated);
   const sessionStatus = useSelector((s) => s.dineIn.sessionStatus);
   const mode = useSelector((s) => s.dineIn.mode);
-  const restaurantId = useSelector((s) => s.dineIn.restaurantId);
   const orderId = useSelector((s) => s.dineIn.orderId);
   const isPaid = useSelector((s) => s.dineIn.isPaid);
 
   useEffect(() => {
-    if (isDineInLocked && orderId) {
-      if (isBillGenerated) {
-        const isOnBillPage = pathname.startsWith(`/order/${orderId}/bill`);
-        if (!isOnBillPage) router.replace(`/order/${orderId}/bill`);
-      } else {
-        const isOnOrderPages = pathname.startsWith(`/order/${orderId}`);
-        if (!isOnOrderPages) router.replace(`/order/${orderId}`);
+    // Dine-in: bill generated — lock to bill page
+    if (mode === "dine-in" && sessionStatus === "active" && orderId && isBillGenerated) {
+      const billPath = `/order/${orderId}/bill`;
+      if (!pathname.startsWith(billPath)) {
+        router.replace(billPath);
       }
       return;
     }
 
-    if (sessionStatus !== "active" || !restaurantId || !mode) return;
-
-    if (mode === "dine-in" && !orderId) {
-      const isOnMenuOrCart =
-        pathname === `/restaurant/${restaurantId}/menu` || pathname === "/cart";
-      if (!isOnMenuOrCart) router.replace(`/restaurant/${restaurantId}/menu`);
+    // Takeaway: paid — lock to order tracking
+    if (mode === "takeaway" && sessionStatus === "active" && orderId && isPaid) {
+      const takeawayPath = `/takeaway-order/${orderId}`;
+      if (!pathname.startsWith(takeawayPath)) {
+        router.replace(takeawayPath);
+      }
       return;
     }
 
-    if (mode === "takeaway") {
-      if (orderId && isPaid) {
-        const isOnTakeaway = pathname.startsWith(`/takeaway-order/${orderId}`);
-        if (!isOnTakeaway) router.replace(`/takeaway-order/${orderId}`);
-      } else if (orderId && !isPaid) {
-        if (pathname !== "/takeaway-payment") router.replace("/takeaway-payment");
+    // Takeaway: placed but not paid — lock to payment
+    if (mode === "takeaway" && sessionStatus === "active" && orderId && !isPaid) {
+      if (pathname !== "/takeaway-payment") {
+        router.replace("/takeaway-payment");
       }
     }
-  }, [isDineInLocked, isBillGenerated, sessionStatus, mode, restaurantId, orderId, isPaid, pathname, router]);
+  }, [isBillGenerated, sessionStatus, mode, orderId, isPaid, pathname, router]);
 }
 
+/**
+ * Prevents pre-order entry pages (mode select, scan, dine-in chooser) from
+ * being accessible once an active dine-in order exists but bill is not yet paid.
+ */
 export function useDineInLockGuard() {
   const router = useRouter();
-  const isDineInLocked = useSelector(selectIsDineInLocked);
+  const mode = useSelector((s) => s.dineIn.mode);
+  const sessionStatus = useSelector((s) => s.dineIn.sessionStatus);
   const orderId = useSelector((s) => s.dineIn.orderId);
+  const isBillGenerated = useSelector(selectIsBillGenerated);
 
   useEffect(() => {
-    if (isDineInLocked && orderId) router.replace(`/order/${orderId}`);
-  }, [isDineInLocked, orderId, router]);
+    if (mode === "dine-in" && sessionStatus === "active" && orderId && !isBillGenerated) {
+      router.replace(`/order/${orderId}`);
+    }
+  }, [mode, sessionStatus, orderId, isBillGenerated, router]);
 }
 
 export function useTakeawayAuthGuard() {

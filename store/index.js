@@ -8,7 +8,7 @@ import takeawayReducer from "./slices/takeawaySlice";
 import uiReducer from "./slices/uiSlice";
 
 const persistConfig = {
-  key: "plate-cart-v4",
+  key: "plate-cart-v5",
   storage,
   whitelist: ["auth", "cart", "dineIn", "takeaway"],
 };

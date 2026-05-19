@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, UtensilsCrossed, Package } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectCount, selectSubtotal } from "@/store/slices/cartSlice";
-import { selectHasActiveDineInOrder, selectHasActiveTakeawayOrder } from "@/store/slices/dineInSlice";
-import { BATCH_STATUS, BATCH_STATUS_LABELS } from "@/constants";
+import { selectHasActiveDineInOrder, selectHasActiveTakeawayOrder, selectIsBillGenerated } from "@/store/slices/dineInSlice";
+import { GROUP_STATUS } from "@/constants";
 import { formatPrice } from "@/lib/format";
 
 export function CartBar() {
@@ -14,23 +14,26 @@ export function CartBar() {
   const subtotal = useSelector(selectSubtotal);
   const hasDineInOrder = useSelector(selectHasActiveDineInOrder);
   const hasTakeawayOrder = useSelector(selectHasActiveTakeawayOrder);
+  const isBillGenerated = useSelector(selectIsBillGenerated);
   const orderId = useSelector((s) => s.dineIn.orderId);
   const restaurantName = useSelector((s) => s.dineIn.restaurantName);
   const tableNumber = useSelector((s) => s.dineIn.tableNumber);
   const orderGroups = useSelector((s) => s.dineIn.orderGroups);
-  const billStatus = useSelector((s) => s.dineIn.billStatus);
   const takeawayStatus = useSelector((s) => s.takeaway.takeawayStatus);
 
-  const isBillGenerated = billStatus === "generated" || billStatus === "paid";
-
+  // Active dine-in order banner
   if (hasDineInOrder && orderId) {
-    const activeGroups = orderGroups.filter((g) => g.status !== BATCH_STATUS.SERVED);
-    const servedGroups = orderGroups.filter((g) => g.status === BATCH_STATUS.SERVED);
+    const activeGroups = orderGroups.filter((g) => g.status !== GROUP_STATUS.SERVED);
+    const allServed = activeGroups.length === 0 && orderGroups.length > 0;
+
     const statusLabel = isBillGenerated
       ? "Bill generated"
-      : servedGroups.length === orderGroups.length
-        ? "All served"
-        : `${activeGroups.length} in progress`;
+      : allServed
+      ? "All served"
+      : `${activeGroups.length} group${activeGroups.length !== 1 ? "s" : ""} in kitchen`;
+
+    const href = isBillGenerated ? `/order/${orderId}/bill` : `/order/${orderId}`;
+    const cta = isBillGenerated ? "View bill" : "Track order";
 
     return (
       <AnimatePresence>
@@ -41,21 +44,21 @@ export function CartBar() {
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 safe-bottom"
         >
-          <Link href={`/order/${orderId}`} className="block mx-auto max-w-md">
+          <Link href={href} className="block mx-auto max-w-md">
             <div className="glass-strong rounded-2xl p-3 pl-4 flex items-center justify-between ring-glow">
               <div className="flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-[oklch(0.74_0.17_155)] text-background">
                   <UtensilsCrossed className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">Current Order</div>
-                  <div className="text-xs text-muted-foreground">
+                  <p className="text-sm font-semibold">Current Order</p>
+                  <p className="text-xs text-muted-foreground">
                     {restaurantName}{tableNumber ? ` · Table ${tableNumber}` : ""} · {statusLabel}
-                  </div>
+                  </p>
                 </div>
               </div>
               <div className="rounded-xl bg-[oklch(0.74_0.17_155)] px-4 py-2.5 text-sm font-semibold text-background">
-                {isBillGenerated ? "View bill" : "Track order"}
+                {cta}
               </div>
             </div>
           </Link>
@@ -64,14 +67,15 @@ export function CartBar() {
     );
   }
 
+  // Active takeaway order banner
   if (hasTakeawayOrder && orderId) {
-    const statusLabel = takeawayStatus === "completed"
-      ? "Completed"
-      : takeawayStatus === "ready"
-        ? "Ready for pickup"
-        : takeawayStatus === "preparing"
-          ? "Preparing"
-          : "Order received";
+    const TAKEAWAY_LABELS = {
+      completed: "Completed",
+      ready: "Ready for pickup",
+      preparing: "Preparing",
+      received: "Order received",
+    };
+    const statusLabel = TAKEAWAY_LABELS[takeawayStatus] ?? "Order received";
 
     return (
       <AnimatePresence>
@@ -89,10 +93,10 @@ export function CartBar() {
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">Your Pickup Order</div>
-                  <div className="text-xs text-muted-foreground">
+                  <p className="text-sm font-semibold">Your Pickup Order</p>
+                  <p className="text-xs text-muted-foreground">
                     {restaurantName} · {statusLabel}
-                  </div>
+                  </p>
                 </div>
               </div>
               <div className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground">
@@ -105,6 +109,7 @@ export function CartBar() {
     );
   }
 
+  // Pending cart items bar
   return (
     <AnimatePresence>
       {count > 0 && (
@@ -122,12 +127,12 @@ export function CartBar() {
                   <ShoppingBag className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">
+                  <p className="text-sm font-semibold">
                     {count} item{count > 1 ? "s" : ""} in cart
-                  </div>
-                  <div className="text-xs text-muted-foreground">
+                  </p>
+                  <p className="text-xs text-muted-foreground">
                     {formatPrice(subtotal)} · taxes extra
-                  </div>
+                  </p>
                 </div>
               </div>
               <div className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground">

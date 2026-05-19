@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
 import { completeBillPayment, endSession } from "@/store/slices/dineInSlice";
-import { clearCart, selectSubtotal } from "@/store/slices/cartSlice";
+import { clearCart } from "@/store/slices/cartSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 

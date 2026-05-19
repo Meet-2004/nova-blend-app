@@ -7,8 +7,8 @@ import { useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSubtotal, clearCart } from "@/store/slices/cartSlice";
-import { placeOrder, markPaid } from "@/store/slices/dineInSlice";
+import { selectSubtotal } from "@/store/slices/cartSlice";
+import { placeFirstOrder, markPaid } from "@/store/slices/dineInSlice";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { useTakeawayCartGuard } from "@/hooks/useSessionGuard";
@@ -30,8 +30,9 @@ export default function TakeawayPayment() {
     setTimeout(() => {
       dispatch(markPaid());
       const id = "ORD-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-      dispatch(placeOrder({ orderId: id, items: [...items], servingTimeId: "now" }));
-      dispatch(clearCart());
+      dispatch(placeFirstOrder({ orderId: id, items: [...items], servingTimeId: "now" }));
+      // Cart is kept so the takeaway order page can display the items.
+      // It is cleared when the order completes in TakeawayOrder page.
       router.replace(`/takeaway-order/${id}`);
     }, 1200);
   };
