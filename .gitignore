@@ -31,3 +31,15 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# dependencies
+node_modules
+
+# next build files
+.next
+
+# production build
+dist
+
+# env files
+.env
