@@ -1,8 +1,5 @@
-"use client";
-
-import { useSessionGuard } from "@/hooks/useSessionGuard";
+import CustomerSessionGuard from "@/components/layout/CustomerSessionGuard";
 
 export default function CustomerLayout({ children }) {
-  useSessionGuard();
-  return <>{children}</>;
+  return <CustomerSessionGuard>{children}</CustomerSessionGuard>;
 }
