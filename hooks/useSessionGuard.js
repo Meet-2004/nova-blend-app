@@ -21,14 +21,10 @@ export function useSessionGuard() {
     if (isDineInLocked && orderId) {
       if (isBillGenerated) {
         const isOnBillPage = pathname.startsWith(`/order/${orderId}/bill`);
-        if (!isOnBillPage) {
-          router.replace(`/order/${orderId}/bill`);
-        }
+        if (!isOnBillPage) router.replace(`/order/${orderId}/bill`);
       } else {
         const isOnOrderPages = pathname.startsWith(`/order/${orderId}`);
-        if (!isOnOrderPages) {
-          router.replace(`/order/${orderId}`);
-        }
+        if (!isOnOrderPages) router.replace(`/order/${orderId}`);
       }
       return;
     }
@@ -38,22 +34,16 @@ export function useSessionGuard() {
     if (mode === "dine-in" && !orderId) {
       const isOnMenuOrCart =
         pathname === `/restaurant/${restaurantId}/menu` || pathname === "/cart";
-      if (!isOnMenuOrCart) {
-        router.replace(`/restaurant/${restaurantId}/menu`);
-      }
+      if (!isOnMenuOrCart) router.replace(`/restaurant/${restaurantId}/menu`);
       return;
     }
 
     if (mode === "takeaway") {
       if (orderId && isPaid) {
         const isOnTakeaway = pathname.startsWith(`/takeaway-order/${orderId}`);
-        if (!isOnTakeaway) {
-          router.replace(`/takeaway-order/${orderId}`);
-        }
+        if (!isOnTakeaway) router.replace(`/takeaway-order/${orderId}`);
       } else if (orderId && !isPaid) {
-        if (pathname !== "/takeaway-payment") {
-          router.replace("/takeaway-payment");
-        }
+        if (pathname !== "/takeaway-payment") router.replace("/takeaway-payment");
       }
     }
   }, [isDineInLocked, isBillGenerated, sessionStatus, mode, restaurantId, orderId, isPaid, pathname, router]);
@@ -65,9 +55,7 @@ export function useDineInLockGuard() {
   const orderId = useSelector((s) => s.dineIn.orderId);
 
   useEffect(() => {
-    if (isDineInLocked && orderId) {
-      router.replace(`/order/${orderId}`);
-    }
+    if (isDineInLocked && orderId) router.replace(`/order/${orderId}`);
   }, [isDineInLocked, orderId, router]);
 }
 
@@ -77,9 +65,7 @@ export function useTakeawayAuthGuard() {
   const isVerified = useSelector((s) => s.auth.isVerified);
 
   useEffect(() => {
-    if (!phone || !isVerified) {
-      router.replace("/takeaway-login");
-    }
+    if (!phone || !isVerified) router.replace("/takeaway-login");
   }, [phone, isVerified, router]);
 }
 
@@ -89,8 +75,6 @@ export function useTakeawayCartGuard() {
   const mode = useSelector((s) => s.dineIn.mode);
 
   useEffect(() => {
-    if (mode !== "takeaway" || itemCount === 0) {
-      router.replace("/takeaway-restaurants");
-    }
+    if (mode !== "takeaway" || itemCount === 0) router.replace("/takeaway-restaurants");
   }, [mode, itemCount, router]);
 }

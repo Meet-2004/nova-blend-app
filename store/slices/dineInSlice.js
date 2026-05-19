@@ -1,17 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { BATCH_STATUS, SERVING_TIME_OPTIONS } from "@/constants";
+
+let groupCounter = 0;
 
 const initialState = {
-  mode: null, // "dine-in" | "takeaway" | null
-  sessionStatus: "idle", // "idle" | "active" | "completed"
+  mode: null,
+  sessionStatus: "idle",
   restaurantId: null,
   restaurantName: null,
   tableNumber: null,
   orderId: null,
-  orderStatus: "none", // "none" | "placed" | "kitchen" | "cooking" | "serving" | "served"
-  billStatus: "none", // "none" | "generated" | "paid"
+  billStatus: "none",
   isPaid: false,
   billConfirmModal: false,
+  orderGroups: [],
 };
+
+function createOrderGroup(items, servingTimeId) {
+  groupCounter += 1;
+  const servingTime = SERVING_TIME_OPTIONS.find((o) => o.id === servingTimeId) || SERVING_TIME_OPTIONS[0];
+  const now = Date.now();
+  const scheduledAt = servingTime.delay > 0 ? now + servingTime.delay * 60 * 1000 : null;
+  const initialStatus = servingTime.delay > 0 ? BATCH_STATUS.SCHEDULED : BATCH_STATUS.RECEIVED;
+  return {
+    id: `grp-${groupCounter}`,
+    groupNumber: groupCounter,
+    items: items.map((i) => ({ ...i })),
+    servingTimeId: servingTime.id,
+    servingTimeLabel: servingTime.label,
+    servingDelay: servingTime.delay,
+    scheduledAt,
+    status: initialStatus,
+    placedAt: now,
+  };
+}
 
 const dineInSlice = createSlice({
   name: "dineIn",
@@ -31,13 +53,32 @@ const dineInSlice = createSlice({
       state.sessionStatus = "active";
     },
     placeOrder(state, action) {
-      state.orderId = action.payload;
+      const { orderId, items, servingTimeId } = action.payload;
+      state.orderId = orderId;
       state.sessionStatus = "active";
       state.billStatus = "none";
-      state.orderStatus = "placed";
+      const group = createOrderGroup(items, servingTimeId);
+      state.orderGroups = [group];
     },
-    setOrderStatus(state, action) {
-      state.orderStatus = action.payload;
+    addOrderGroup(state, action) {
+      const { items, servingTimeId } = action.payload;
+      const group = createOrderGroup(items, servingTimeId);
+      state.orderGroups.push(group);
+    },
+    updateGroupStatus(state, action) {
+      const { groupId, status } = action.payload;
+      const group = state.orderGroups.find((g) => g.id === groupId);
+      if (group) {
+        group.status = status;
+      }
+    },
+    activateScheduledGroup(state, action) {
+      const { groupId } = action.payload;
+      const group = state.orderGroups.find((g) => g.id === groupId);
+      if (group && group.status === BATCH_STATUS.SCHEDULED) {
+        group.status = BATCH_STATUS.RECEIVED;
+        group.placedAt = Date.now();
+      }
     },
     showBillConfirmModal(state) {
       state.billConfirmModal = true;
@@ -56,6 +97,7 @@ const dineInSlice = createSlice({
       state.isPaid = true;
     },
     endSession() {
+      groupCounter = 0;
       return initialState;
     },
   },
@@ -66,7 +108,9 @@ export const {
   setRestaurant,
   startSession,
   placeOrder,
-  setOrderStatus,
+  addOrderGroup,
+  updateGroupStatus,
+  activateScheduledGroup,
   showBillConfirmModal,
   hideBillConfirmModal,
   generateBill,
@@ -82,13 +126,15 @@ export const selectIsDineInLocked = (state) =>
   state.dineIn.billStatus !== "paid";
 
 export const selectIsBillGenerated = (state) =>
-  state.dineIn.billStatus === "generated";
+  state.dineIn.billStatus === "generated" || state.dineIn.billStatus === "paid";
 
-export const selectCanGenerateBill = (state) =>
-  state.dineIn.mode === "dine-in" &&
-  !!state.dineIn.orderId &&
-  state.dineIn.orderStatus === "served" &&
-  state.dineIn.billStatus === "none";
+export const selectCanGenerateBill = (state) => {
+  if (state.dineIn.mode !== "dine-in" || !state.dineIn.orderId) return false;
+  if (state.dineIn.billStatus !== "none") return false;
+  const groups = state.dineIn.orderGroups;
+  if (groups.length === 0) return false;
+  return groups.every((g) => g.status === BATCH_STATUS.SERVED);
+};
 
 export const selectIsActiveSession = (state) =>
   state.dineIn.sessionStatus === "active" && !!state.dineIn.restaurantId && !!state.dineIn.mode;
@@ -103,5 +149,10 @@ export const selectHasActiveTakeawayOrder = (state) =>
   state.dineIn.mode === "takeaway" &&
   !!state.dineIn.orderId &&
   state.dineIn.sessionStatus === "active";
+
+export const selectAllGroupsServed = (state) => {
+  const groups = state.dineIn.orderGroups;
+  return groups.length > 0 && groups.every((g) => g.status === BATCH_STATUS.SERVED);
+};
 
 export default dineInSlice.reducer;

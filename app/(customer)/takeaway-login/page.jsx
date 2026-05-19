@@ -14,22 +14,20 @@ import { OTP_LENGTH, OTP_RESEND_COOLDOWN, DEMO_OTP } from "@/constants";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { phoneSchema } from "@/validations";
+import { cn } from "@/lib/cn";
 
 export default function TakeawayLogin() {
   useDineInLockGuard();
   const router = useRouter();
   const dispatch = useDispatch();
   const authPhone = useSelector((s) => s.auth.phone);
-
   const [step, setStep] = useState("phone");
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState(null);
   const [resendTimer, setResendTimer] = useState(0);
-
   const inputRefs = useRef([]);
-
   const {
     register,
     handleSubmit,
@@ -39,7 +37,6 @@ export default function TakeawayLogin() {
     resolver: zodResolver(phoneSchema),
     defaultValues: { phone: "" },
   });
-
   const phoneValue = watch("phone");
 
   useEffect(() => {
@@ -72,9 +69,7 @@ export default function TakeawayLogin() {
     const next = [...otp];
     next[index] = digit;
     setOtp(next);
-    if (digit && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (digit && index < OTP_LENGTH - 1) inputRefs.current[index + 1]?.focus();
   };
 
   const handleOtpKeyDown = (index, e) => {
@@ -90,12 +85,16 @@ export default function TakeawayLogin() {
 
   const handleOtpPaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, OTP_LENGTH);
     const next = Array(OTP_LENGTH).fill("");
-    pasted.split("").forEach((d, i) => { next[i] = d; });
+    pasted.split("").forEach((d, i) => {
+      next[i] = d;
+    });
     setOtp(next);
-    const focusIdx = Math.min(pasted.length, OTP_LENGTH - 1);
-    inputRefs.current[focusIdx]?.focus();
+    inputRefs.current[Math.min(pasted.length, OTP_LENGTH - 1)]?.focus();
   };
 
   const verify = useCallback(async () => {
@@ -128,13 +127,11 @@ export default function TakeawayLogin() {
     await new Promise((r) => setTimeout(r, 500));
     setTimeout(() => inputRefs.current[0]?.focus(), 150);
   };
-
   const otpComplete = otp.join("").length === OTP_LENGTH;
 
   return (
     <Container className="min-h-screen pb-10">
       <TopBar title="Order for pickup" />
-
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -145,7 +142,11 @@ export default function TakeawayLogin() {
           className="mt-10"
         >
           <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary/15 text-primary">
-            {step === "phone" ? <Phone className="h-6 w-6" /> : <ShieldCheck className="h-6 w-6" />}
+            {step === "phone" ? (
+              <Phone className="h-6 w-6" />
+            ) : (
+              <ShieldCheck className="h-6 w-6" />
+            )}
           </div>
           <h2 className="mt-5 text-2xl font-bold tracking-tight">
             {step === "phone" ? "Enter your number" : "Verify OTP"}
@@ -173,7 +174,9 @@ export default function TakeawayLogin() {
           {step === "phone" ? (
             <form onSubmit={handleSubmit(sendOtp)} className="mt-6 space-y-3">
               <div className="flex items-center gap-2 rounded-2xl glass px-4 h-14">
-                <span className="text-sm font-semibold text-muted-foreground shrink-0">+91</span>
+                <span className="text-sm font-semibold text-muted-foreground shrink-0">
+                  +91
+                </span>
                 <div className="h-4 w-px bg-border mx-1" />
                 <input
                   {...register("phone")}
@@ -195,14 +198,20 @@ export default function TakeawayLogin() {
               <motion.button
                 type="submit"
                 whileTap={{ scale: 0.98 }}
-                disabled={(phoneValue || "").replace(/\D/g, "").length < 10 || sending}
+                disabled={
+                  (phoneValue || "").replace(/\D/g, "").length < 10 || sending
+                }
                 className="w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold disabled:opacity-40 ring-glow inline-flex items-center justify-center gap-2"
               >
                 {sending ? (
                   <>
                     <motion.span
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                       className="inline-block h-4 w-4 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground"
                     />
                     Sending...
@@ -218,7 +227,9 @@ export default function TakeawayLogin() {
                 {otp.map((digit, i) => (
                   <motion.input
                     key={i}
-                    ref={(el) => { inputRefs.current[i] = el; }}
+                    ref={(el) => {
+                      inputRefs.current[i] = el;
+                    }}
                     inputMode="numeric"
                     maxLength={1}
                     value={digit}
@@ -227,18 +238,16 @@ export default function TakeawayLogin() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: i * 0.06 }}
-                    className={[
-                      "flex-1 h-16 rounded-2xl text-center text-2xl font-bold tabular-nums outline-none",
-                      "transition border",
+                    className={cn(
+                      "flex-1 h-16 rounded-2xl text-center text-2xl font-bold tabular-nums outline-none transition border",
                       digit
                         ? "glass-strong border-primary/40 text-foreground ring-1 ring-primary/30"
                         : "glass border-border text-foreground",
-                      "focus:border-primary/50 focus:ring-1 focus:ring-primary/40",
-                    ].join(" ")}
+                      "focus:border-primary/50 focus:ring-1 focus:ring-primary/40"
+                    )}
                   />
                 ))}
               </div>
-
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={verify}
@@ -249,7 +258,11 @@ export default function TakeawayLogin() {
                   <>
                     <motion.span
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                       className="inline-block h-4 w-4 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground"
                     />
                     Verifying...
@@ -258,10 +271,13 @@ export default function TakeawayLogin() {
                   "Verify & continue"
                 )}
               </motion.button>
-
               <div className="flex items-center justify-between pt-1">
                 <button
-                  onClick={() => { setStep("phone"); setError(null); setOtp(Array(OTP_LENGTH).fill("")); }}
+                  onClick={() => {
+                    setStep("phone");
+                    setError(null);
+                    setOtp(Array(OTP_LENGTH).fill(""));
+                  }}
                   className="text-xs text-muted-foreground hover:text-foreground transition"
                 >
                   Change number
@@ -272,7 +288,9 @@ export default function TakeawayLogin() {
                   className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition disabled:opacity-50"
                 >
                   <RefreshCw className="h-3 w-3" />
-                  {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
+                  {resendTimer > 0
+                    ? `Resend in ${resendTimer}s`
+                    : "Resend OTP"}
                 </button>
               </div>
             </div>

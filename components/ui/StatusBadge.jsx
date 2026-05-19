@@ -8,6 +8,7 @@ const tones = {
   danger: "bg-destructive/15 text-destructive border-destructive/30",
   veg: "bg-[oklch(0.74_0.17_155/0.12)] text-[oklch(0.84_0.17_155)] border-[oklch(0.74_0.17_155/0.3)]",
   nonveg: "bg-destructive/12 text-destructive border-destructive/30",
+  scheduled: "bg-accent/15 text-accent border-accent/30",
 };
 
 export function StatusBadge({ children, tone = "default", className }) {

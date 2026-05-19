@@ -10,11 +10,8 @@ export default function RestaurantBill() {
   const orderId = useSelector((s) => s.dineIn.orderId);
 
   useEffect(() => {
-    if (orderId) {
-      router.replace(`/order/${orderId}/bill`);
-    } else {
-      router.replace(`/restaurant/${params.id}/menu`);
-    }
+    if (orderId) router.replace(`/order/${orderId}/bill`);
+    else router.replace(`/restaurant/${params.id}/menu`);
   }, [orderId, params.id, router]);
 
   return null;

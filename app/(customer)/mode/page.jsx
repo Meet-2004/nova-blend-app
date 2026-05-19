@@ -26,23 +26,9 @@ export default function ModeSelect() {
         <h2 className="text-2xl font-bold tracking-tight">How would you like to order?</h2>
         <p className="mt-1 text-sm text-muted-foreground">Choose your dining preference.</p>
       </div>
-
       <div className="mt-8 space-y-4">
-        <Tile
-          onClick={() => pick("dine-in")}
-          icon={<QrCode className="h-6 w-6" />}
-          title="Dine-in"
-          desc="Scan the QR at your table or search nearby. No sign-in needed."
-          gradient="from-primary/30 via-primary/10 to-transparent"
-        />
-        <Tile
-          onClick={() => pick("takeaway")}
-          icon={<ShoppingBag className="h-6 w-6" />}
-          title="Takeaway"
-          desc="Sign in with your phone, pre-order, pay, and pick up fresh."
-          gradient="from-accent/30 via-accent/10 to-transparent"
-          delay={0.05}
-        />
+        <Tile onClick={() => pick("dine-in")} icon={<QrCode className="h-6 w-6" />} title="Dine-in" desc="Scan the QR at your table or search nearby. No sign-in needed." gradient="from-primary/30 via-primary/10 to-transparent" />
+        <Tile onClick={() => pick("takeaway")} icon={<ShoppingBag className="h-6 w-6" />} title="Takeaway" desc="Sign in with your phone, pre-order, pay, and pick up fresh." gradient="from-accent/30 via-accent/10 to-transparent" delay={0.05} />
       </div>
     </Container>
   );
@@ -50,14 +36,7 @@ export default function ModeSelect() {
 
 function Tile({ onClick, icon, title, desc, gradient, delay = 0 }) {
   return (
-    <motion.button
-      onClick={onClick}
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      whileTap={{ scale: 0.98 }}
-      className="relative w-full text-left rounded-3xl glass-strong p-6 overflow-hidden ring-glow"
-    >
+    <motion.button onClick={onClick} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} whileTap={{ scale: 0.98 }} className="relative w-full text-left rounded-3xl glass-strong p-6 overflow-hidden ring-glow">
       <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${gradient}`} />
       <div className="relative">
         <div className="flex items-center justify-between">

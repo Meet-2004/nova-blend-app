@@ -1,90 +1,77 @@
-const img = (seed) =>
-  `https://images.unsplash.com/photo-${seed}?auto=format&fit=crop&w=600&q=70`;
-
 export const SERVING_GROUPS = [
-  { id: "starters", label: "Starters", emoji: "🥗", hint: "Served first" },
-  { id: "mains", label: "Mains", emoji: "🍛", hint: "After starters" },
-  { id: "desserts", label: "Desserts", emoji: "🍰", hint: "After mains" },
-  { id: "drinks", label: "Drinks", emoji: "🥤", hint: "Anytime" },
+  { id: "starters", label: "Starters", emoji: "🥗", hint: "Begin your meal" },
+  { id: "mains", label: "Main Course", emoji: "🍛", hint: "Hearty dishes" },
+  { id: "breads", label: "Breads & Rice", emoji: "🫓", hint: "On the side" },
+  { id: "desserts", label: "Desserts", emoji: "🍨", hint: "Sweet finish" },
+  { id: "drinks", label: "Drinks", emoji: "🥤", hint: "Refreshments" },
 ];
 
 export const RESTAURANTS = [
   {
-    id: "r1",
-    name: "Saffron House",
+    id: "spice-garden",
+    name: "Spice Garden",
     cuisine: "North Indian · Mughlai",
-    rating: 4.7,
-    eta: "20–30 min",
-    distance: "0.4 km",
-    cover: img("1565958011703-44f9829ba187"),
-    tags: ["Live counter", "Bar", "Family"],
-  },
-  {
-    id: "r2",
-    name: "Tokyo Lane",
-    cuisine: "Japanese · Sushi",
-    rating: 4.8,
-    eta: "25–35 min",
-    distance: "1.2 km",
-    cover: img("1579871494447-9811cf80d66c"),
-    tags: ["Omakase", "Sake"],
-  },
-  {
-    id: "r3",
-    name: "Forno",
-    cuisine: "Italian · Wood-fired",
     rating: 4.6,
-    eta: "15–25 min",
-    distance: "0.8 km",
-    cover: img("1513104890138-7c749659a591"),
-    tags: ["Pizza", "Vegan options"],
+    eta: "25-35 min",
+    distance: "1.2 km",
+    cover: "https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&w=800",
+    tags: ["Popular", "Dine-in"],
   },
   {
-    id: "r4",
-    name: "Coast & Coal",
-    cuisine: "Coastal · Seafood",
-    rating: 4.5,
-    eta: "30–40 min",
-    distance: "2.1 km",
-    cover: img("1559339352-11d035aa65de"),
-    tags: ["Grills", "Cocktails"],
+    id: "coastal-catch",
+    name: "Coastal Catch",
+    cuisine: "Seafood · Goan",
+    rating: 4.4,
+    eta: "30-40 min",
+    distance: "2.5 km",
+    cover: "https://images.pexels.com/photos/2608047/pexels-photo-2608047.jpeg?auto=compress&cs=tinysrgb&w=800",
+    tags: ["New", "Takeaway"],
+  },
+  {
+    id: "wok-house",
+    name: "Wok House",
+    cuisine: "Chinese · Thai",
+    rating: 4.3,
+    eta: "20-30 min",
+    distance: "0.8 km",
+    cover: "https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=800",
+    tags: ["Fast", "Dine-in"],
   },
 ];
 
-export const MENU = {
-  r1: [
-    { id: "m1", name: "Tandoori Paneer Tikka", description: "Smoky cottage cheese, charred peppers, mint chutney.", price: 320, image: img("1565557623262-b51c2513a641"), group: "starters", veg: true, popular: true },
-    { id: "m2", name: "Galouti Kebab", description: "Melt-in-mouth lamb patties, saffron foam, ulte tawa parathas.", price: 480, image: img("1567188040759-fb8a883dc6d8"), group: "starters", veg: false, spicy: true },
-    { id: "m3", name: "Butter Chicken", description: "Tandoor-charred chicken in silky tomato-cream gravy.", price: 540, image: img("1603894584373-5ac82b2ae398"), group: "mains", veg: false, popular: true },
-    { id: "m4", name: "Dal Makhani", description: "Slow-cooked black lentils, finished with cream and butter.", price: 380, image: img("1546833999-b9f581a1996d"), group: "mains", veg: true },
-    { id: "m5", name: "Saffron Kulfi", description: "Reduced milk, pistachio, saffron threads, edible silver.", price: 220, image: img("1488477181946-6428a0291777"), group: "desserts", veg: true },
-    { id: "m6", name: "Masala Chai", description: "Assam tea, cardamom, ginger, jaggery.", price: 90, image: img("1597318236008-95e2c2c2ad2f"), group: "drinks", veg: true },
-    { id: "m7", name: "Mango Lassi", description: "Alphonso pulp, hung curd, a pinch of cardamom.", price: 160, image: img("1571805341302-f857fa4c1bb1"), group: "drinks", veg: true, popular: true },
+const MENU_DATA = {
+  "spice-garden": [
+    { id: "sg-1", name: "Paneer Tikka", price: 280, group: "starters", veg: true, popular: true, spicy: true, description: "Marinated cottage cheese grilled in tandoor", image: "https://images.pexels.com/photos/3850832/pexels-photo-3850832.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-2", name: "Chicken Seekh Kebab", price: 320, group: "starters", veg: false, popular: true, spicy: false, description: "Minced chicken kebabs with aromatic spices", image: "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-3", name: "Tomato Soup", price: 150, group: "starters", veg: true, popular: false, spicy: false, description: "Creamy tomato shorba with croutons", image: "https://images.pexels.com/photos/539434/pexels-photo-539434.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-4", name: "Butter Chicken", price: 380, group: "mains", veg: false, popular: true, spicy: false, description: "Tender chicken in rich tomato-butter gravy", image: "https://images.pexels.com/photos/4754789/pexels-photo-4754789.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-5", name: "Dal Makhani", price: 260, group: "mains", veg: true, popular: true, spicy: false, description: "Slow-cooked black lentils with cream", image: "https://images.pexels.com/photos/3349350/pexels-photo-3349350.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-6", name: "Paneer Butter Masala", price: 320, group: "mains", veg: true, popular: false, spicy: true, description: "Cottage cheese in creamy tomato sauce", image: "https://images.pexels.com/photos/3850832/pexels-photo-3850832.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-7", name: "Garlic Naan", price: 80, group: "breads", veg: true, popular: true, spicy: false, description: "Soft naan with garlic and butter", image: "https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-8", name: "Jeera Rice", price: 180, group: "breads", veg: true, popular: false, spicy: false, description: "Fragrant basmati rice with cumin", image: "https://images.pexels.com/photos/5404466/pexels-photo-5404466.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-9", name: "Gulab Jamun", price: 160, group: "desserts", veg: true, popular: true, spicy: false, description: "Deep-fried milk dumplings in sugar syrup", image: "https://images.pexels.com/photos/539434/pexels-photo-539434.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-10", name: "Kulfi", price: 140, group: "desserts", veg: true, popular: false, spicy: false, description: "Traditional Indian ice cream with pistachios", image: "https://images.pexels.com/photos/3850832/pexels-photo-3850832.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-11", name: "Mango Lassi", price: 120, group: "drinks", veg: true, popular: true, spicy: false, description: "Chilled mango yogurt drink", image: "https://images.pexels.com/photos/5404466/pexels-photo-5404466.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "sg-12", name: "Masala Chai", price: 60, group: "drinks", veg: true, popular: false, spicy: true, description: "Spiced Indian tea with ginger", image: "https://images.pexels.com/photos/539434/pexels-photo-539434.jpeg?auto=compress&cs=tinysrgb&w=400" },
   ],
-  r2: [
-    { id: "m8", name: "Edamame", description: "Steamed, smoked salt.", price: 260, image: img("1564834744159-ff0ea41ba4b9"), group: "starters", veg: true },
-    { id: "m9", name: "Salmon Nigiri (4 pc)", description: "Norwegian salmon, vinegared rice.", price: 540, image: img("1579871494447-9811cf80d66c"), group: "mains", veg: false, popular: true },
-    { id: "m10", name: "Mochi Trio", description: "Matcha, yuzu, black sesame.", price: 320, image: img("1564834744159-ff0ea41ba4b9"), group: "desserts", veg: true },
-    { id: "m11", name: "Sencha", description: "Hot Japanese green tea.", price: 180, image: img("1597318236008-95e2c2c2ad2f"), group: "drinks", veg: true },
+  "coastal-catch": [
+    { id: "cc-1", name: "Prawn Fry", price: 380, group: "starters", veg: false, popular: true, spicy: true, description: "Crispy fried prawns with Goan spices", image: "https://images.pexels.com/photos/3850832/pexels-photo-3850832.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "cc-2", name: "Fish Curry Rice", price: 350, group: "mains", veg: false, popular: true, spicy: true, description: "Goan fish curry with steamed rice", image: "https://images.pexels.com/photos/4754789/pexels-photo-4754789.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "cc-3", name: "Sorpotel", price: 320, group: "mains", veg: false, popular: false, spicy: true, description: "Traditional Goan pork stew", image: "https://images.pexels.com/photos/3349350/pexels-photo-3349350.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "cc-4", name: "Bebinca", price: 200, group: "desserts", veg: true, popular: true, spicy: false, description: "Layered Goan coconut cake", image: "https://images.pexels.com/photos/539434/pexels-photo-539434.jpeg?auto=compress&cs=tinysrgb&w=400" },
   ],
-  r3: [
-    { id: "m12", name: "Bruschetta Pomodoro", description: "Sourdough, heirloom tomato, basil.", price: 290, image: img("1572441713132-c542fc4fe282"), group: "starters", veg: true },
-    { id: "m13", name: "Margherita D.O.P.", description: "San Marzano, fior di latte, basil.", price: 520, image: img("1513104890138-7c749659a591"), group: "mains", veg: true, popular: true },
-    { id: "m14", name: "Tiramisu", description: "Mascarpone, espresso-soaked savoiardi.", price: 340, image: img("1571877227200-a0d98ea607e9"), group: "desserts", veg: true },
-    { id: "m15", name: "Espresso", description: "Single origin, double shot.", price: 140, image: img("1497935586351-b67a49e012bf"), group: "drinks", veg: true },
-  ],
-  r4: [
-    { id: "m16", name: "Prawn Koliwada", description: "Crisp-fried prawns, kokum mayo.", price: 480, image: img("1559339352-11d035aa65de"), group: "starters", veg: false, spicy: true },
-    { id: "m17", name: "Goan Fish Curry", description: "Day's catch, coconut, kokum, steamed rice.", price: 640, image: img("1546833999-b9f581a1996d"), group: "mains", veg: false, popular: true },
-    { id: "m18", name: "Bebinca", description: "Seven-layer Goan dessert, jaggery, ghee.", price: 280, image: img("1488477181946-6428a0291777"), group: "desserts", veg: true },
-    { id: "m19", name: "Sol Kadhi", description: "Kokum, coconut milk, green chili.", price: 120, image: img("1571805341302-f857fa4c1bb1"), group: "drinks", veg: true },
+  "wok-house": [
+    { id: "wh-1", name: "Spring Rolls", price: 220, group: "starters", veg: true, popular: true, spicy: false, description: "Crispy vegetable spring rolls with dipping sauce", image: "https://images.pexels.com/photos/3850832/pexels-photo-3850832.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "wh-2", name: "Kung Pao Chicken", price: 340, group: "mains", veg: false, popular: true, spicy: true, description: "Spicy stir-fried chicken with peanuts", image: "https://images.pexels.com/photos/4754789/pexels-photo-4754789.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "wh-3", name: "Veg Fried Rice", price: 240, group: "mains", veg: true, popular: false, spicy: false, description: "Wok-tossed rice with vegetables", image: "https://images.pexels.com/photos/5404466/pexels-photo-5404466.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { id: "wh-4", name: "Mango Sticky Rice", price: 180, group: "desserts", veg: true, popular: true, spicy: false, description: "Thai dessert with fresh mango and coconut", image: "https://images.pexels.com/photos/539434/pexels-photo-539434.jpeg?auto=compress&cs=tinysrgb&w=400" },
   ],
 };
 
 export function getRestaurant(id) {
-  return RESTAURANTS.find((r) => r.id === id);
+  return RESTAURANTS.find((r) => r.id === id) || null;
 }
 
 export function getMenu(id) {
-  return MENU[id] ?? [];
+  return MENU_DATA[id] || [];
 }

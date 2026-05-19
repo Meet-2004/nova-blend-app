@@ -15,11 +15,3 @@ export function GlassCard({ children, className, strong, onClick }) {
     </div>
   );
 }
-
-export function Card({ children, className }) {
-  return (
-    <div className={cn("rounded-2xl bg-card border border-border", className)}>
-      {children}
-    </div>
-  );
-}

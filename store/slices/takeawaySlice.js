@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  takeawayStatus: "received", // "received" | "preparing" | "ready" | "completed"
+  takeawayStatus: "received",
 };
 
 const takeawaySlice = createSlice({

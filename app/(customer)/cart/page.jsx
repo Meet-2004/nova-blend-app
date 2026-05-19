@@ -2,15 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Plus, Minus, ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
+import { Plus, Minus, ShoppingBag, ArrowRight, Trash2, Clock } from "lucide-react";
 import { useEffect } from "react";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "@/components/layout/TopBar";
 import { useDispatch, useSelector } from "react-redux";
-import { incrementItem, decrementItem, removeItem, selectSubtotal } from "@/store/slices/cartSlice";
-import { placeOrder, selectHasActiveDineInOrder, selectHasActiveTakeawayOrder } from "@/store/slices/dineInSlice";
+import { incrementItem, decrementItem, removeItem, selectSubtotal, selectServingTime } from "@/store/slices/cartSlice";
+import { placeOrder, addOrderGroup, selectHasActiveDineInOrder, selectHasActiveTakeawayOrder, selectIsBillGenerated } from "@/store/slices/dineInSlice";
+import { SERVING_GROUPS, SERVING_TIME_OPTIONS } from "@/services/restaurants";
 import { formatPrice } from "@/lib/format";
-import { SERVING_GROUPS } from "@/services/restaurants";
+import { cn } from "@/lib/cn";
 
 export default function CartPage() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function CartPage() {
   const billStatus = useSelector((s) => s.dineIn.billStatus);
   const hasDineInOrder = useSelector(selectHasActiveDineInOrder);
   const hasTakeawayOrder = useSelector(selectHasActiveTakeawayOrder);
+  const servingTime = useSelector(selectServingTime);
   const subtotal = useSelector(selectSubtotal);
   const taxes = Math.round(subtotal * 0.05);
   const service = mode === "dine-in" ? Math.round(subtotal * 0.05) : 0;
@@ -48,10 +50,15 @@ export default function CartPage() {
 
   const handlePlaceOrder = () => {
     const id = "ORD-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    dispatch(placeOrder(id));
     if (mode === "dine-in") {
-      router.push(`/order/${id}`);
+      if (hasDineInOrder && orderId) {
+        dispatch(addOrderGroup({ items: [...items], servingTimeId: servingTime.id }));
+      } else {
+        dispatch(placeOrder({ orderId: id, items: [...items], servingTimeId: servingTime.id }));
+      }
+      router.push(`/order/${hasDineInOrder ? orderId : id}`);
     } else {
+      dispatch(placeOrder({ orderId: id, items: [...items], servingTimeId: "now" }));
       router.push("/takeaway-payment");
     }
   };
@@ -64,12 +71,7 @@ export default function CartPage() {
           <h2 className="mt-4 text-lg font-semibold">Your cart is empty</h2>
           <p className="mt-1 text-sm text-muted-foreground">Add items from the menu to get started.</p>
           {restaurantId && (
-            <button
-              onClick={() => router.push(`/restaurant/${restaurantId}/menu`)}
-              className="mt-4 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
-            >
-              Browse menu
-            </button>
+            <button onClick={() => router.push(`/restaurant/${restaurantId}/menu`)} className="mt-4 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold">Browse menu</button>
           )}
         </div>
       </Container>
@@ -80,7 +82,17 @@ export default function CartPage() {
     <Container className="min-h-screen pb-10">
       <TopBar title="Your cart" subtitle={restaurantName ?? "Restaurant"} />
 
-      <div className="mt-6 space-y-5">
+      {mode === "dine-in" && (
+        <div className="mt-5 glass rounded-2xl p-3 flex items-center gap-3">
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary"><Clock className="h-4 w-4" /></div>
+          <div>
+            <div className="text-xs font-medium">Serving: {servingTime.label}</div>
+            <div className="text-[11px] text-muted-foreground">Items will be scheduled accordingly</div>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-5 space-y-5">
         {grouped.map(({ group, items }) => (
           <div key={group.id}>
             <div className="mb-2 flex items-center gap-2 px-1">
@@ -96,25 +108,10 @@ export default function CartPage() {
                     <div className="text-xs text-muted-foreground">{formatPrice(item.price)} each</div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => dispatch(decrementItem(item.id))}
-                      className="grid h-7 w-7 place-items-center rounded-md bg-white/5 hover:bg-white/10"
-                    >
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
+                    <button onClick={() => dispatch(decrementItem(item.id))} className="grid h-7 w-7 place-items-center rounded-md bg-white/5 hover:bg-white/10"><Minus className="h-3.5 w-3.5" /></button>
                     <span className="text-sm font-bold tabular-nums w-5 text-center">{item.qty}</span>
-                    <button
-                      onClick={() => dispatch(incrementItem(item.id))}
-                      className="grid h-7 w-7 place-items-center rounded-md bg-white/5 hover:bg-white/10"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => dispatch(removeItem(item.id))}
-                      className="grid h-7 w-7 place-items-center rounded-md text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+                    <button onClick={() => dispatch(incrementItem(item.id))} className="grid h-7 w-7 place-items-center rounded-md bg-white/5 hover:bg-white/10"><Plus className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => dispatch(removeItem(item.id))} className="grid h-7 w-7 place-items-center rounded-md text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" /></button>
                   </div>
                 </div>
               ))}
@@ -125,34 +122,16 @@ export default function CartPage() {
 
       <div className="mt-6 glass-strong rounded-3xl p-5">
         <div className="space-y-1.5 text-sm">
-          <div className="flex justify-between text-muted-foreground">
-            <span>Subtotal</span>
-            <span className="text-foreground">{formatPrice(subtotal)}</span>
-          </div>
-          <div className="flex justify-between text-muted-foreground">
-            <span>Taxes (5%)</span>
-            <span className="text-foreground">{formatPrice(taxes)}</span>
-          </div>
-          {service > 0 && (
-            <div className="flex justify-between text-muted-foreground">
-              <span>Service charge (5%)</span>
-              <span className="text-foreground">{formatPrice(service)}</span>
-            </div>
-          )}
+          <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span className="text-foreground">{formatPrice(subtotal)}</span></div>
+          <div className="flex justify-between text-muted-foreground"><span>Taxes (5%)</span><span className="text-foreground">{formatPrice(taxes)}</span></div>
+          {service > 0 && <div className="flex justify-between text-muted-foreground"><span>Service charge (5%)</span><span className="text-foreground">{formatPrice(service)}</span></div>}
           <div className="my-3 h-px bg-border" />
-          <div className="flex justify-between font-bold text-base">
-            <span>Total</span>
-            <span>{formatPrice(total)}</span>
-          </div>
+          <div className="flex justify-between font-bold text-base"><span>Total</span><span>{formatPrice(total)}</span></div>
         </div>
       </div>
 
-      <motion.button
-        whileTap={{ scale: 0.98 }}
-        onClick={handlePlaceOrder}
-        className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow inline-flex items-center justify-center gap-2"
-      >
-        {mode === "dine-in" ? "Place order" : "Proceed to pay"}
+      <motion.button whileTap={{ scale: 0.98 }} onClick={handlePlaceOrder} className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground h-14 font-semibold ring-glow inline-flex items-center justify-center gap-2">
+        {hasDineInOrder ? "Add to current order" : mode === "dine-in" ? "Place order" : "Proceed to pay"}
         <ArrowRight className="h-5 w-5" />
       </motion.button>
     </Container>

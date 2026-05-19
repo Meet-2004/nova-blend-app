@@ -6,6 +6,7 @@ import { ShoppingBag, UtensilsCrossed, Package } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectCount, selectSubtotal } from "@/store/slices/cartSlice";
 import { selectHasActiveDineInOrder, selectHasActiveTakeawayOrder } from "@/store/slices/dineInSlice";
+import { BATCH_STATUS, BATCH_STATUS_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/format";
 
 export function CartBar() {
@@ -16,18 +17,20 @@ export function CartBar() {
   const orderId = useSelector((s) => s.dineIn.orderId);
   const restaurantName = useSelector((s) => s.dineIn.restaurantName);
   const tableNumber = useSelector((s) => s.dineIn.tableNumber);
-  const orderStatus = useSelector((s) => s.dineIn.orderStatus);
-  const takeawayStatus = useSelector((s) => s.takeaway.takeawayStatus);
+  const orderGroups = useSelector((s) => s.dineIn.orderGroups);
   const billStatus = useSelector((s) => s.dineIn.billStatus);
+  const takeawayStatus = useSelector((s) => s.takeaway.takeawayStatus);
 
   const isBillGenerated = billStatus === "generated" || billStatus === "paid";
 
   if (hasDineInOrder && orderId) {
-    const statusLabel = orderStatus === "served"
-      ? "Served"
-      : orderStatus === "none" || !orderStatus
-        ? "Order placed"
-        : orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1);
+    const activeGroups = orderGroups.filter((g) => g.status !== BATCH_STATUS.SERVED);
+    const servedGroups = orderGroups.filter((g) => g.status === BATCH_STATUS.SERVED);
+    const statusLabel = isBillGenerated
+      ? "Bill generated"
+      : servedGroups.length === orderGroups.length
+        ? "All served"
+        : `${activeGroups.length} in progress`;
 
     return (
       <AnimatePresence>
@@ -45,9 +48,7 @@ export function CartBar() {
                   <UtensilsCrossed className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">
-                    Current Order
-                  </div>
+                  <div className="text-sm font-semibold">Current Order</div>
                   <div className="text-xs text-muted-foreground">
                     {restaurantName}{tableNumber ? ` · Table ${tableNumber}` : ""} · {statusLabel}
                   </div>
@@ -88,9 +89,7 @@ export function CartBar() {
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">
-                    Your Pickup Order
-                  </div>
+                  <div className="text-sm font-semibold">Your Pickup Order</div>
                   <div className="text-xs text-muted-foreground">
                     {restaurantName} · {statusLabel}
                   </div>

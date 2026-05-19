@@ -17,20 +17,13 @@ export default function Landing() {
       <Container className="relative pt-10 pb-16">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground font-bold">
-              P
-            </div>
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground font-bold">P</div>
             <span className="font-semibold tracking-tight">Plate</span>
           </div>
-          <span className="text-xs text-muted-foreground">v0.1 · beta</span>
+          <span className="text-xs text-muted-foreground">v0.2 · beta</span>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14"
-        >
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="mt-14">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white/5 px-3 py-1 text-xs">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             The new restaurant operating system
@@ -44,12 +37,7 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 space-y-3"
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="mt-10 space-y-3">
           <Link href="/mode">
             <GlassCard strong className="p-5 flex items-center justify-between group ring-glow">
               <div className="flex items-center gap-4">
@@ -64,7 +52,6 @@ export default function Landing() {
               <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-foreground" />
             </GlassCard>
           </Link>
-
           <div className="grid grid-cols-2 gap-3">
             <Link href="/dine-in">
               <FeatureTile icon={<QrCode className="h-5 w-5" />} label="Dine-in" hint="QR or search" />
