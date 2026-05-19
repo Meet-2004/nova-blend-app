@@ -16,8 +16,7 @@ import {
   clearCart,
 } from "@/store/slices/cartSlice";
 import {
-  placeFirstOrder,
-  addOrderGroup,
+  placeOrder,
   selectHasActiveDineInOrder,
   selectHasActiveTakeawayOrder,
   selectIsBillGenerated,
@@ -61,18 +60,10 @@ export default function CartPage() {
 
   const handlePlaceOrder = () => {
     if (mode === "dine-in") {
-      if (hasDineInOrder && orderId) {
-        // Add items as a new independent group to the existing order
-        dispatch(addOrderGroup({ items: [...items], servingTimeId: servingTime.id }));
-        dispatch(clearCart());
-        router.push(`/order/${orderId}`);
-      } else {
-        // First order for this table — creates Group 1
-        const id = generateOrderId();
-        dispatch(placeFirstOrder({ orderId: id, items: [...items], servingTimeId: servingTime.id }));
-        dispatch(clearCart());
-        router.push(`/order/${id}`);
-      }
+      const id = orderId || generateOrderId();
+      dispatch(placeOrder({ orderId: id, items: [...items], servingTimeId: servingTime.id }));
+      dispatch(clearCart());
+      router.push(`/order/${id}`);
     } else {
       // Takeaway: payment page handles order placement
       router.push("/takeaway-payment");

@@ -4,10 +4,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
-export function TopBar({ title, subtitle, right, backTo, noBack }) {
+export function TopBar({ title, subtitle, right, backTo, onBack, backButton, noBack }) {
   const router = useRouter();
   const pathname = usePathname();
-  const showBack = !noBack && (!!backTo || pathname !== "/");
+  const showBack = backButton !== false && !noBack && (!!backTo || !!onBack || pathname !== "/");
 
   return (
     <header className="sticky top-0 z-30 -mx-5 px-5 py-3 glass-strong">
@@ -21,6 +21,15 @@ export function TopBar({ title, subtitle, right, backTo, noBack }) {
             >
               <ChevronLeft className="h-5 w-5" />
             </Link>
+          ) : onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="grid h-10 w-10 place-items-center rounded-full bg-white/5 hover:bg-white/10 transition"
+              aria-label="Back"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
           ) : (
             <button
               type="button"
